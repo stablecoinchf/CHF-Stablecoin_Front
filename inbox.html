@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Inbox</title>
+    <link rel="stylesheet" type="text/css" href="main.css">
+    <script src="./node_modules/web3/dist/web3.min.js"></script>
+</head>
+<body>
+    <div class="container">
+
+        <h1>Inbox</h1>
+
+        <h2 id="inbox"></h2>
+
+        <label for="message" class="col-lg-2 control-label">Message</label>
+        <input id="message" type="text">
+
+        <button id="button">Update Message</button>
+
+    </div>
+
+    <script>
+
+	window.addEventListener('load', function () {
+            web3 = new Web3(new Web3.providers.HttpProvider("http://127.0.0.1:7545"));
+        })
+
+	
+    	
+	console.log(web3.version);
+	console.log(web3.eth.accounts);
+	web3.eth.defaultAccount = web3.eth.accounts[0];
+	console.log(web3.eth.defaultAccount);
+
+    </script>
+
+</body>
+</html>
