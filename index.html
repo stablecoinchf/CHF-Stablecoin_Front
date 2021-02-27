@@ -3,8 +3,86 @@
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" type="text/css" href="main.css">
+    <script type="text/javascript" src="./node_modules/web3/dist/web3.min.js"></script>
+
+	<script type="text/javascript" src="./stablecoin.js"></script>
+	
+    <script type="text/javascript">
+
+        window.addEventListener('load', function () {
+		if (window.ethereum) {
+			console.log("METAMASK");
+		} else {
+               	 	console.log('No Web3 Detected... using HTTP Provider')
+              	  	window.web3 = new Web3(new Web3.providers.HttpProvider("http://127.0.0.1:7545"));
+                    // window.web3 = new Web3(new Web3.providers.HttpProvider("https://rinkeby.infura.io/v3/ea4e920151c24db3ab82bc3b2d7a9c05"))          
+                    getBalances();
+		}	
+        })
+        async function getBalances() {
+            var account;
+            const accounts = await web3.eth.getAccounts();
+            account = accounts[0];
+            document.getElementById("currentAccount").innerHTML = account;
+            try {
+                await web3.eth.getBalance(account, function (error, wei) {
+                    if (!error) {
+                        var balance = web3.utils.fromWei(wei, 'ether');
+                        document.getElementById("balanceETH").innerHTML = balance + " ETH";
+                    }
+                });
+            } catch (err) {
+                document.getElementById("balanceETH").innerHTML = err;
+            }
+            try {
+                var sc = await new web3.eth.Contract(contractAbi, contractAddress); 
+			    var balanceBitCHF = await sc.methods.balanceOf(account).call();
+                document.getElementById("balanceBCHF").innerHTML = balanceBitCHF + " BCHF";
+            } catch (err) {
+                document.getElementById("balanceBCHF").innerHTML = err;
+            }
+            try {
+			    var balanceBitCHFShares = await sc.methods.getShareAmount(account).call();
+                document.getElementById("balanceBCHFShares").innerHTML = balanceBitCHFShares + " BCHF Shares";
+            } catch (err) {
+                document.getElementById("balanceBCHFShares").innerHTML = err;
+            }
+        }
+
+        /* async function getMessage() {
+
+        try {
+            var InboxContract = new web3.eth.Contract(abi, address); 
+			const message = await InboxContract.methods.message().call();
+		    document.getElementById("message").innerHTML = message;
+	        } catch (err) {
+                document.getElementById("message").innerHTML = err;
+            }
+
+        }
+		async function updateMessage() {
+
+		try {
+			var InboxContract = new web3.eth.Contract(abi, address); 
+			const accounts = await web3.eth.getAccounts();
+            var account = accounts[0];  
+			var newMessage  = document.getElementById("newMessage").value;
+			await InboxContract.methods.setMessage(newMessage).send({ from: account});
+			} catch (err) {
+				document.getElementById("message").innerHTML = err;
+			}
+			getMessage();
+		} */
+    </script>
 </head>
 <body>
-    <h1>Bit CHF - Swiss Stablecoin</h1>
+    <h1>BCHF StableCoin</h1>
+    <p>Curent Account: </p><div id="currentAccount"></div>
+    <br />
+    <div id="balanceETH"></div>
+    <br />
+    <div id="balanceBCHF"></div>
+    <br />
+    <div id="balanceBCHFShares"></div>
 </body>
 </html>
