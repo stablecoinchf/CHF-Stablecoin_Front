@@ -1,9 +1,16 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <!--style>
+        table, th, td {
+          border: 1px solid black;
+          border-collapse: collapse;
+        }
+    </style-->
+
     <meta charset="UTF-8">
     <link rel="stylesheet" type="text/css" href="main.css">
-    <script type="text/javascript" src="./node_modules/web3/dist/web3.min.js"></script>
+    <script type="text/javascript" src="./web3.min.js"></script>
 
 	<script type="text/javascript" src="./stablecoin.js"></script>
 	
@@ -11,21 +18,14 @@
 
         var account, sc ;
 
-        window.addEventListener('load', function () {
-		if (window.ethereum) {
-			console.log("METAMASK");
-		} else {
-               	 	console.log('No Web3 Detected... using HTTP Provider')
-              	  	window.web3 = new Web3(new Web3.providers.HttpProvider("http://127.0.0.1:7545"));
-                    // window.web3 = new Web3(new Web3.providers.HttpProvider("https://rinkeby.infura.io/v3/ea4e920151c24db3ab82bc3b2d7a9c05"))          
-                    getInfos();
-		}	
-        })
+        window.addEventListener("load", () => connectToMetamask(), false);
 
         async function getInfos() {
             var err,accounts ;
 
-            if (!accounts) {
+            
+
+            if (!accounts) {                
                 accounts = await web3.eth.getAccounts();
             } 
 
@@ -36,9 +36,8 @@
             var htmlAccounts = "";
             for (var i = 0; i < accounts.length; i++) {
                 htmlAccounts = htmlAccounts + "<br>" + accounts[i]
-            }
+            } 
 
-            // document.getElementById("currentAccountInput").value = account;
             document.getElementById("currentAccount").innerHTML = account;
             document.getElementById("accounts").innerHTML = htmlAccounts;
             document.getElementById("contractAddress").innerHTML = contractAddress;
@@ -56,12 +55,12 @@
                 document.getElementById("symbol").innerHTML = err;
             }
 
-            try { 
+            /* try { 
 			    var name = await sc.methods.name().call();
                 document.getElementById("name").innerHTML = name;
             } catch (err) {
                 document.getElementById("name").innerHTML = err;
-            }
+            }*/
 
 
             try { 
@@ -107,7 +106,7 @@
             try { 
 			    var priceBCHF = await sc.methods.scPrice().call();
                 priceBCHF = priceBCHF / 100000000;
-                document.getElementById("priceBCHF").innerHTML = priceBCHF + " % (of CHF)";
+                document.getElementById("priceBCHF").innerHTML = priceBCHF + "% (of CHF)";
             } catch (err) {
                 document.getElementById("priceBCHF").innerHTML = err;
             }
@@ -185,63 +184,75 @@
             getInfos();
         }
 
+        async function connectToMetamask() {
+            // Wait for loading completion to avoid race conditions with web3 injection timing.    
+		    if (window.ethereum) {
+                console.log('window.ethereum detected.');
+			    window.web3 = new Web3(window.ethereum);
+                try {
+                // Request account access if needed
+                await window.ethereum.enable();
+                // window.ethereum.enable();
+                // const accounts = await window.ethereum.send('eth_requestAccounts');
+                } catch (error) {
+                    document.getElementById("connectError").innerHTML = error;
+                }
+                getInfos();
+		    } 
+            // Legacy dapp browsers...
+            else if (window.web3) {
+            // Use Mist/MetaMask's provider.
+            console.log('Injected web3 detected.');
+            getInfos();
+            } 
+            // Fallback to localhost; use dev console port by default...
+            else {
+               	 	console.log('No Web3 Detected... using HTTP Provider')
+              	  	window.web3 = new Web3(new Web3.providers.HttpProvider("http://127.0.0.1:7545"));         
+                    getInfos();
+		    }	
+        }
+
     </script>
 </head>
 <body>
-    <h1><span id="symbol"></span> <span id="name"></span></h1>    
-
+    <h1><span id="symbol"></span>, Price :<span id="priceBCHF"></span></h1>    
+    <span id="connectError"></span>
     <table>
         <tr>
-            <th>Contract info</th>      
-            <th>Acount info</th>
-            <th>Actions</th> 
+            <td><b>Acount :</b> <span id="currentAccount"></span></td>
+            <td></td>
+            <td><b>Contract :</b> <span id="contractAddress"></span></td>    
         </tr>
         <tr valign="top">
-            <td   >
+            <td>
                 <br />
-                <b> Address : </b> 
+                <b> Owner:</b>  <span id="owner"></span>, 
+                <b> Minter:</b>  <span id="minter"></span>,
+                <b> Burner:</b>  <span id="burner"></span>
                 <br />
-                <span id="contractAddress"></span>
+                <b> Total amount of ETH :</b> <span id="balanceETH"></span>
                 <br />
+                <b> Total amount of coins :</b> <span id="balanceBCHF"></span>
+                <br />
+                <b> Total number of shares :</b> <span id="balanceBCHFShares"></span>
+            </td> 
+            <td width="25%"></td>
+            <td >
+                <br />
+                <b> Price ETH :</b>  <span id="priceETHCHF"></span>,
+                <b> Price CHF :</b>  <span id="priceCHFETH"></span>
                 <br />
                 <b> Total amount of ETH :</b>  <span id="contractBalanceETH"></span>
                 <br />
                 <b> Total supply of coins :</b>  <span id="totalSupplyCoin"></span>
                 <br />
                 <b> Total number of shares :</b>  <span id="totalSupplyShares"></span>
-                <br />
-                <br />
-                <b> Price ETH :</b>  <span id="priceETHCHF"></span>
-                <br />
-                <b> Price CHF :</b>  <span id="priceCHFETH"></span>
-                <br />
-                <b> Price BCHF :</b>  <span id="priceBCHF"></span>
             </td> 
-            <td>
-                <br />
-                <b> Address:</b>
-                <br />
-                <span id="currentAccount"></span>
-                <br />
-                <br />
-                <b> Balance: </b> 
-                <br />
-                <span id="balanceETH"></span>
-                <br />
-                <span id="balanceBCHF"></span>
-                <br />
-                <span id="balanceBCHFShares"></span>
-                <br />
-                <br />
-                <b> Owner:</b>  <span id="owner"></span>
-                <br />
-                <b> Minter:</b>  <span id="minter"></span>
-                <br />
-                <b> Burner:</b>  <span id="burner"></span>
-                <br />
-                
-                
-            </td> 
+        </tr>
+        </table>
+        <table>
+        <tr valign="top">
             <td>
                 <br />
                 <b>Buy shares & 10 coins pro share</b>
@@ -250,8 +261,8 @@
                 Number of shares: <input type="text" id="numberOfShares" name="numberOfShares" ></input>
                 <button onclick="buyShares()">Buy</button>
                 <span id="actionErrors"></span>
-                <br />
-                <br />
+            </td>
+            <td>
                 <br />
                 <b>Update account</b>
                 <br />
