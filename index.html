@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <!--style>
+    <style>
         table, th, td {
           border: 1px solid black;
           border-collapse: collapse;
         }
-    </style-->
+    </style>
 
     <meta charset="UTF-8">
     <link rel="stylesheet" type="text/css" href="main.css">
@@ -16,14 +16,18 @@
 	
     <script type="text/javascript">
 
-        var account, sc ;
+        var account, sc , bc;
 
         window.addEventListener("load", () => connectToMetamask(), false);
 
         async function getInfos() {
             var err,accounts ;
 
-            
+            document.getElementById("errorsBuyBonds").innerHTML = "";
+            document.getElementById("errorsBuyShares").innerHTML = "";
+            document.getElementById("errorsSellCoins").innerHTML = "";
+            document.getElementById("errorsBuyCoins").innerHTML = "";
+            document.getElementById("errorsExecuteBonds").innerHTML = "";
 
             if (!accounts) {                
                 accounts = await web3.eth.getAccounts();
@@ -46,11 +50,23 @@
 
             if (!sc) {
                 sc = await new web3.eth.Contract(contractAbi, contractAddress);
-            }   
+            } 
+
+            if (!bc) {
+                var bcAddress = await  sc.methods.bc().call();
+                bc = await new web3.eth.Contract(bondCampaignAbi, bcAddress); 
+            }
+                
+            var web3ScPrice = await sc.methods.scPrice().call();  
+            var web3GetBondAmount = await sc.methods.getBondAmount(account).call();
+            var web3ScSymbol = await  sc.methods.symbol().call();  
+            var web3PriceETHCHF = await sc.methods.getPrice_ETH_CHF().call();
+
+            var web3BcAmount = await bc.methods.amount().call();
+
 
             try { 
-			    var symbol = await sc.methods.symbol().call();
-                document.getElementById("symbol").innerHTML = symbol;
+                document.getElementById("symbol").innerHTML = web3ScSymbol;
             } catch (err) {
                 document.getElementById("symbol").innerHTML = err;
             }
@@ -61,6 +77,30 @@
             } catch (err) {
                 document.getElementById("name").innerHTML = err;
             }*/
+
+            try { 
+			    var minPrice = await sc.methods.minPrice().call();
+                minPrice = minPrice / 100000000;
+                document.getElementById("minPrice").innerHTML = minPrice + " %";
+            } catch (err) {
+                document.getElementById("minPrice").innerHTML = err;
+            }
+
+            try { 
+			    var maxPrice = await sc.methods.maxPrice().call();
+                maxPrice = maxPrice / 100000000;
+                document.getElementById("maxPrice").innerHTML = maxPrice + " %";
+            } catch (err) {
+                document.getElementById("maxPrice").innerHTML = err;
+            }
+
+            try { 
+			    var icoPrice = await sc.methods.icoPrice().call();
+                icoPrice = icoPrice / 100000000;
+                document.getElementById("icoPrice").innerHTML = icoPrice + " %";
+            } catch (err) {
+                document.getElementById("icoPrice").innerHTML = err;
+            }
 
 
             try { 
@@ -74,7 +114,7 @@
             try { 
 			    var totalSupplyCoin = await sc.methods.totalSupply().call();
                 // totalSupplyCoin = web3.utils.fromWei(totalSupplyCoin, 'ether');
-                document.getElementById("totalSupplyCoin").innerHTML = totalSupplyCoin + " BCHF";
+                document.getElementById("totalSupplyCoin").innerHTML = totalSupplyCoin + " " + web3ScSymbol;
             } catch (err) {
                 document.getElementById("totalSupplyCoin").innerHTML = err;
             }
@@ -82,13 +122,13 @@
             try { 
 			    var totalSupplyShares = await sc.methods.totalNoOfShares().call();
                 // totalSupplyShares = web3.utils.fromWei(totalSupplyShares, 'ether');
-                document.getElementById("totalSupplyShares").innerHTML = totalSupplyShares + " BCHFS";
+                document.getElementById("totalSupplyShares").innerHTML = totalSupplyShares + " " + web3ScSymbol+"S";
             } catch (err) {
                 document.getElementById("totalSupplyShares").innerHTML = err;
             }
 
             try { 
-			    var priceETHCHF = await sc.methods.getPrice_ETH_CHF().call();
+			    var priceETHCHF = web3PriceETHCHF;
                 priceETHCHF = priceETHCHF / 100000000;
                 document.getElementById("priceETHCHF").innerHTML = priceETHCHF + " CHF";
             } catch (err) {
@@ -104,7 +144,7 @@
             }
 
             try { 
-			    var priceBCHF = await sc.methods.scPrice().call();
+			    priceBCHF = web3ScPrice;
                 priceBCHF = priceBCHF / 100000000;
                 document.getElementById("priceBCHF").innerHTML = priceBCHF + "% (of CHF)";
             } catch (err) {
@@ -150,17 +190,115 @@
 
             try { 
 			    var balanceBitCHF = await sc.methods.balanceOf(account).call();
-                document.getElementById("balanceBCHF").innerHTML = balanceBitCHF + " BCHF";
+                document.getElementById("balanceBCHF").innerHTML = balanceBitCHF + " " + web3ScSymbol;
             } catch (err) {
                 document.getElementById("balanceBCHF").innerHTML = err;
             }
            
             try {
 			    var balanceBitCHFShares = await sc.methods.getShareAmount(account).call();
-                document.getElementById("balanceBCHFShares").innerHTML = balanceBitCHFShares + " BCHFS";
+                document.getElementById("balanceBCHFShares").innerHTML = balanceBitCHFShares + " " + web3ScSymbol +"S";
             } catch (err) {
                 document.getElementById("balanceBCHFShares").innerHTML = err;
+            } 
+
+            try {
+			    var balanceBitCHFBonds = web3GetBondAmount;
+                document.getElementById("balanceBCHFBonds").innerHTML = balanceBitCHFBonds;
+                document.getElementById("bondsToExecute").innerHTML = balanceBitCHFBonds;
+                document.getElementById("convertedCoins").innerHTML = balanceBitCHFBonds;
+                document.getElementById("convertedShares").innerHTML = Math.round(balanceBitCHFBonds/10);
+            } catch (err) {
+                document.getElementById("balanceBCHFBonds").innerHTML = err;
+            } 
+
+            try {
+                var priceCHFETH = await sc.methods.getPrice_CHF_ETH().call();
+                var priceICO = await sc.methods.icoPrice().call();
+                var sharePriceCHF = ((priceICO / 100000000) / 100) * 10;
+                var sharePriceETH = (priceCHFETH * sharePriceCHF) * 10000000000;
+                coinPriceETH = Math.round(coinPriceETH);
+                sharePriceETH = web3.utils.fromWei(sharePriceETH.toString(), 'ether');
+                document.getElementById("sharePrice").innerHTML = (Math.round(sharePriceCHF * 1000) / 1000) + " CHF (" + sharePriceETH + " ETH)";
+            } catch (err) {
+                document.getElementById("sharePrice").innerHTML = err;
+            } 
+
+            try {
+                var priceCHFETH = await sc.methods.getPrice_CHF_ETH().call();
+                var maxPrice = await sc.methods.maxPrice().call();
+                var coinPriceCHF = (maxPrice / 100000000) / 100;
+                var coinPriceETH = (priceCHFETH * coinPriceCHF) * 10000000000;
+                coinPriceETH = Math.round(coinPriceETH);
+                coinPriceETH = web3.utils.fromWei(coinPriceETH.toString(), 'ether');
+                document.getElementById("coinPrice").innerHTML = (Math.round(coinPriceCHF * 1000) / 1000) + " CHF (" + coinPriceETH + " ETH)";
+            } catch (err) {
+                document.getElementById("coinPrice").innerHTML = err;
+            } 
+
+            try {
+                var priceCHFETH = await sc.methods.getPrice_CHF_ETH().call();
+                var buyPrice = await sc.methods.getBuyPrice().call();
+                var coinPriceCHF = (buyPrice / 100000000) / 100;
+                var coinPriceETH = (priceCHFETH * coinPriceCHF) * 10000000000;
+                coinPriceETH = Math.round(coinPriceETH);
+                coinPriceETH = web3.utils.fromWei(coinPriceETH.toString(), 'ether');
+                document.getElementById("coinPriceSell").innerHTML = (Math.round(coinPriceCHF * 1000) / 1000)  + " CHF (" + coinPriceETH + " ETH)";
+            } catch (err) {
+                document.getElementById("coinPriceSell").innerHTML = err;
             }
+            if (buyPrice > 0)  {
+                document.getElementById("numberOfCoinsSell").disabled = false;
+                document.getElementById("btnSell").disabled = false;
+                document.getElementById("errorsSellCoins").innerHTML = "Selling coins enabled. <br> <b>Contract is bying coins</b> bacause the curent price is not in the expected range.";
+            }   else  {
+                document.getElementById("numberOfCoinsSell").disabled = true;
+                document.getElementById("btnSell").disabled = true;
+                document.getElementById("errorsSellCoins").innerHTML = "Selling coins disabled. <br/> Contract is not bying coins bacause the curent price is in the expected range.";
+            }
+
+            try {
+                var bondPrice  = await sc.methods.getBondPrice().call();
+                bondPrice = (bondPrice / 100000000)/ 100;
+                document.getElementById("bondPrice").innerHTML = (Math.round(bondPrice * 1000) / 1000) + " " + web3ScSymbol;
+            } catch (err) {
+                document.getElementById("bondPrice").innerHTML = err;
+            }
+            if (bondPrice > 0)  {
+                if (web3BcAmount>0){
+                    document.getElementById("numberOfBonds").disabled = false;
+                    document.getElementById("btnBuyBonds").disabled = false;
+                    document.getElementById("errorsBuyBonds").innerHTML = "<b>Buying bonds enabled.</b> <br> <b>Contract is selling " + web3BcAmount +" bonds</b> bacause the curent price is not in the expected range.";
+                } else {
+                    document.getElementById("numberOfBonds").disabled = true;
+                    document.getElementById("btnBuyBonds").disabled = true;
+                    document.getElementById("errorsBuyBonds").innerHTML = "<b>Buying bonds disabled.</b> <br> Contract is not selling bonds bacause they are sold out. <br/> The available amout of bonds for sale is " + web3BcAmount ;
+                }
+
+            }   else  {
+                document.getElementById("btnBuyBonds").disabled = true;
+                document.getElementById("numberOfBonds").disabled = true;
+                document.getElementById("errorsBuyBonds").innerHTML = "<b>Buying bonds disabled.</b> <br/> Contract is not selling bonds bacause the curent price is in the expected range.";
+            }
+
+            var targetPrice = 10000000000;
+            if (web3ScPrice > targetPrice)  {
+                if (web3GetBondAmount>0){
+                    var bondConversionFee = await sc.methods.getBondConversionFee(account).call();
+                    var bondConversionFee = web3.utils.fromWei(bondConversionFee, 'ether');
+                    var bondConversionFeeCHF = Math.round(bondConversionFee * web3PriceETHCHF / 1000000) / 100;
+                    document.getElementById("btnExecuteBonds").disabled = false;
+                    document.getElementById("errorsExecuteBonds").innerHTML = "<b>Converting bonds enabled, </b> <br>bacause the current price of the coin is greater than 1 CHF.<br> Mining fee: " + bondConversionFeeCHF + " CHF (" + bondConversionFee +" ETH)";
+                } else {
+                    document.getElementById("btnExecuteBonds").disabled = true;
+                    document.getElementById("errorsExecuteBonds").innerHTML = "<b>Converting bonds disabled. </b> <br>No bonds to convert.";
+                }
+                
+            }   else  {
+                document.getElementById("btnExecuteBonds").disabled = true;
+                document.getElementById("errorsExecuteBonds").innerHTML = "<b>Converting bonds disabled </b> <br>because the current price of the coin is less than 1 CHF";
+            }
+
         }
 
         async function updateAddress() {
@@ -169,20 +307,131 @@
         }
 
         async function buyShares() {
-            document.getElementById("actionErrors").innerHTML = "";
+
+            document.getElementById("errorsBuyShares").innerHTML = "";
+
+            var noOfShares = document.getElementById("numberOfShares").value;
+
+            if (noOfShares <= 0) {
+                document.getElementById("errorsBuyShares").innerHTML = "Incorrect number of shares";
+                return;
+            }
+
             if (!sc) {
                 sc = await new web3.eth.Contract(contractAbi, contractAddress);
             }
-            var noOfShares = document.getElementById("numberOfShares").value;
+            
             var priceCHFETH = await sc.methods.getPrice_CHF_ETH().call();
-            var transactionPrice = priceCHFETH * noOfShares;
+            var priceICO = await sc.methods.icoPrice().call();
+            var sharePriceCHF = ((priceICO / 100000000) / 100) * 10;
+            var transactionPrice = (priceCHFETH * sharePriceCHF * noOfShares) * 10000000000;
             try {
                 await sc.methods.buyShare(noOfShares).send({ from: account, gas: 3000000, value: transactionPrice});
+                getInfos();
 			} catch (err) {
-				document.getElementById("actionErrors").innerHTML = err;
+				document.getElementById("errorsBuyShares").innerHTML = err;
 			}
-            getInfos();
         }
+
+        async function buyCoins() { 
+            document.getElementById("errorsBuyCoins").innerHTML = "";
+
+            var noOfCoins = document.getElementById("numberOfCoins").value;
+
+            if (noOfCoins <= 0) {
+                document.getElementById("errorsBuyCoins").innerHTML = "Incorrect number of coins";
+                return;
+            }
+
+            if (!sc) {
+                sc = await new web3.eth.Contract(contractAbi, contractAddress);
+            }
+            
+            var priceCHFETH = await sc.methods.getPrice_CHF_ETH().call();
+            var maxPrice = await sc.methods.maxPrice().call();
+            var coinPriceCHF = (maxPrice / 100000000) / 100;
+            var transactionPrice = (priceCHFETH * coinPriceCHF * noOfCoins) * 10000000000;
+            try {
+                await sc.methods.buyCoin(noOfCoins).send({ from: account, gas: 3000000, value: transactionPrice});
+                getInfos();
+			} catch (err) {
+				document.getElementById("errorsBuyCoins").innerHTML = err;
+			}
+        }
+
+        async function sellCoins() { 
+            document.getElementById("errorsSellCoins").innerHTML = "";
+
+            var noOfCoins = document.getElementById("numberOfCoinsSell").value;
+
+            if (noOfCoins <= 0) {
+                document.getElementById("errorsSellCoins").innerHTML = "Incorrect number of coins";
+                return;
+            }
+
+            if (!sc) {
+                sc = await new web3.eth.Contract(contractAbi, contractAddress);
+            }
+           
+            try {
+                await sc.methods.sellCoin(noOfCoins).send({ from: account, gas: 3000000});
+                getInfos();
+			} catch (err) {
+				document.getElementById("errorsSellCoins").innerHTML = err;
+			}
+        }
+
+        async function buyBonds() { 
+            document.getElementById("errorsBuyBonds").innerHTML = "";
+
+            var noOfBonds = document.getElementById("numberOfBonds").value;
+
+            if (noOfBonds <= 0) {
+                document.getElementById("errorsBuyBonds").innerHTML = "Incorrect number of bonds";
+                return;
+            }
+
+            if (!sc) {
+                sc = await new web3.eth.Contract(contractAbi, contractAddress);
+            }
+            
+
+            try {
+                await sc.methods.buyBond(noOfBonds).send({ from: account, gas: 3000000});
+                getInfos();
+			} catch (err) {
+				document.getElementById("errorsBuyBonds").innerHTML = err;
+			}
+
+        }
+
+
+        async function executeBonds() { 
+            document.getElementById("errorsExecuteBonds").innerHTML = "";
+            if (!sc) {
+                sc = await new web3.eth.Contract(contractAbi, contractAddress);
+            }
+            try {
+                var bondConversionFee = await sc.methods.getBondConversionFee(account).call();
+                await sc.methods.executeBond().send({ from: account, gas: 3000000, value: bondConversionFee});
+                getInfos();
+			} catch (err) {
+				document.getElementById("errorsExecuteBonds").innerHTML = err;
+			}
+
+        }
+
+        async function buySharesTransactionPrice() {
+            var noOfShares = document.getElementById("numberOfShares").value;
+            var priceCHFETH = await sc.methods.getPrice_CHF_ETH().call();
+            var priceICO = await sc.methods.icoPrice().call();
+            var transactionPrice = priceCHFETH * noOfShares * priceICO;
+            document.getElementById("bsTransactionPrice").innerHTML = transactionPrice;
+        }
+
+        
+
+
 
         async function connectToMetamask() {
             // Wait for loading completion to avoid race conditions with web3 injection timing.    
@@ -216,8 +465,11 @@
     </script>
 </head>
 <body>
-    <h1><span id="symbol"></span>, Price :<span id="priceBCHF"></span></h1>    
+    <h1><span id="symbol"></span> current price : <span id="priceBCHF"></span></h1>    
+    min Price: <span id="minPrice"></span>, max Price: <span id="maxPrice"></span>, ico Price: <span id="icoPrice"></span>
     <span id="connectError"></span>
+    <br />
+    <br />  
     <table>
         <tr>
             <td><b>Acount :</b> <span id="currentAccount"></span></td>
@@ -231,11 +483,13 @@
                 <b> Minter:</b>  <span id="minter"></span>,
                 <b> Burner:</b>  <span id="burner"></span>
                 <br />
-                <b> Total amount of ETH :</b> <span id="balanceETH"></span>
+                <b> Amount of ETH :</b> <span id="balanceETH"></span>
                 <br />
-                <b> Total amount of coins :</b> <span id="balanceBCHF"></span>
+                <b> Amount of coins :</b> <span id="balanceBCHF"></span>
                 <br />
-                <b> Total number of shares :</b> <span id="balanceBCHFShares"></span>
+                <b> Amount of shares :</b> <span id="balanceBCHFShares"></span>
+                <br />
+                <b> Amount of bonds :</b> <span id="balanceBCHFBonds"></span>
             </td> 
             <td width="25%"></td>
             <td >
@@ -255,20 +509,66 @@
         <tr valign="top">
             <td>
                 <br />
-                <b>Buy shares & 10 coins pro share</b>
+                <b>ICO : Buy shares & 10 coins pro share</b>
                 <br />
                 <br />
-                Number of shares: <input type="text" id="numberOfShares" name="numberOfShares" ></input>
+                Number of shares: <input type="number"  id="numberOfShares" name="numberOfShares" ></input>
+                <br />
+                <b>ICO share price:</b> <span id="sharePrice"></span>
                 <button onclick="buyShares()">Buy</button>
-                <span id="actionErrors"></span>
+                <span id="errorsBuyShares"></span>
             </td>
             <td>
+                <br />
+                <b>Buy Coin</b>
+                <br />
+                <br />
+                Number of coins: <input type="number" id="numberOfCoins" name="numberOfCoins" ></input>
+                <br />
+                <b>Coin price</b> <span id="coinPrice"></span>
+                <button onclick="buyCoins()">Buy</button>
+                <span id="errorsBuyCoins"></span>
+            </td>
+            <td> 
+                <br />
+                <b>Sell Coin</b>
+                <br />
+                <br />
+                Number of coins: <input type="number" id="numberOfCoinsSell" name="numberOfCoinsSell" ></input>
+                <br />
+                <b>Coin price</b> <span id="coinPriceSell"></span>
+                <button onclick="sellCoins()" id="btnSell" name="btnSell" >Sell</button>
+                <span id="errorsSellCoins"></span>
+            </td>
+            <td> 
+                <br />
+                <b>Buy Bond</b>
+                <br />
+                <br />
+                Number of bonds: <input type="number" id="numberOfBonds" name="numberOfBonds" ></input>
+                <br />
+                <b>Bond price</b> <span id="bondPrice"></span>
+                <button onclick="buyBonds()" id="btnBuyBonds" name="btnBuyBonds" >Buy</button>
+                <span id="errorsBuyBonds"></span>
+                <br />
+                <br />
+                <br />
+                <b>Convert <span id="bondsToExecute"></span> bonds</b> <br/> to <span id="convertedCoins"></span> coins and <span id="convertedShares"></span> shares.
+                <br />
+                <button onclick="executeBonds()" id="btnExecuteBonds" name="btnExecuteBonds" >Convert</button>
+                <span id="errorsExecuteBonds"></span>
+            </td>
+        </tr>
+        <tr valign="top">
+            <td colspan="2">
                 <br />
                 <b>Update account</b>
                 <br />
                 <br />
                 New account address: <input type="text" id="currentAccountInput" name="currentAccountInput" ></input>
                 <button onclick="updateAddress()">Update</button>
+            </td>
+            <td colspan="2">
                 <br />
                 Available accounts:
                 <br />    

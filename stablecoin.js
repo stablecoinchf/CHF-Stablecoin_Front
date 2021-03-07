@@ -1,6 +1,188 @@
-const contractAddress = '0xb0B04f4915d604C5e2Fab0256974BeE45FD52453';		
+const contractAddress = '0x8a0c3CBED068662300255DE56012546782c8c48c';	
 
-	const contractAbi = [
+    const bondCampaignAbi = [
+        {
+            "inputs": [
+                {
+                    "internalType": "uint256",
+                    "name": "price_",
+                    "type": "uint256"
+                },
+                {
+                    "internalType": "uint256",
+                    "name": "totalsupply_",
+                    "type": "uint256"
+                }
+            ],
+            "stateMutability": "nonpayable",
+            "type": "constructor"
+        },
+        {
+            "inputs": [],
+            "name": "amount",
+            "outputs": [
+                {
+                    "internalType": "uint256",
+                    "name": "",
+                    "type": "uint256"
+                }
+            ],
+            "stateMutability": "view",
+            "type": "function"
+        },
+        {
+            "inputs": [
+                {
+                    "internalType": "uint256",
+                    "name": "amount_",
+                    "type": "uint256"
+                }
+            ],
+            "name": "decreaseAmount",
+            "outputs": [],
+            "stateMutability": "nonpayable",
+            "type": "function"
+        },
+        {
+            "inputs": [],
+            "name": "price",
+            "outputs": [
+                {
+                    "internalType": "uint256",
+                    "name": "",
+                    "type": "uint256"
+                }
+            ],
+            "stateMutability": "view",
+            "type": "function"
+        },
+        {
+            "inputs": [],
+            "name": "priceDiscount",
+            "outputs": [
+                {
+                    "internalType": "uint256",
+                    "name": "",
+                    "type": "uint256"
+                }
+            ],
+            "stateMutability": "view",
+            "type": "function"
+        },
+        {
+            "inputs": [
+                {
+                    "internalType": "uint256",
+                    "name": "price_",
+                    "type": "uint256"
+                },
+                {
+                    "internalType": "uint256",
+                    "name": "totalsupply_",
+                    "type": "uint256"
+                }
+            ],
+            "name": "update",
+            "outputs": [],
+            "stateMutability": "nonpayable",
+            "type": "function"
+        }
+    ];
+
+	const contractAbi =[
+        {
+            "inputs": [
+                {
+                    "internalType": "address",
+                    "name": "account",
+                    "type": "address"
+                }
+            ],
+            "name": "addBurner",
+            "outputs": [],
+            "stateMutability": "nonpayable",
+            "type": "function"
+        },
+        {
+            "inputs": [
+                {
+                    "internalType": "address",
+                    "name": "account",
+                    "type": "address"
+                }
+            ],
+            "name": "addMinter",
+            "outputs": [],
+            "stateMutability": "nonpayable",
+            "type": "function"
+        },
+        {
+            "inputs": [
+                {
+                    "internalType": "address",
+                    "name": "account",
+                    "type": "address"
+                },
+                {
+                    "internalType": "uint256",
+                    "name": "amount",
+                    "type": "uint256"
+                }
+            ],
+            "name": "addShareHolder",
+            "outputs": [
+                {
+                    "internalType": "bool",
+                    "name": "",
+                    "type": "bool"
+                }
+            ],
+            "stateMutability": "nonpayable",
+            "type": "function"
+        },
+        {
+            "inputs": [
+                {
+                    "internalType": "address",
+                    "name": "spender",
+                    "type": "address"
+                },
+                {
+                    "internalType": "uint256",
+                    "name": "amount",
+                    "type": "uint256"
+                }
+            ],
+            "name": "approve",
+            "outputs": [
+                {
+                    "internalType": "bool",
+                    "name": "",
+                    "type": "bool"
+                }
+            ],
+            "stateMutability": "nonpayable",
+            "type": "function"
+        },
+        {
+            "inputs": [
+                {
+                    "internalType": "uint256",
+                    "name": "amount",
+                    "type": "uint256"
+                }
+            ],
+            "name": "burn",
+            "outputs": [
+                {
+                    "internalType": "bool",
+                    "name": "",
+                    "type": "bool"
+                }
+            ],
+            "stateMutability": "nonpayable",
+            "type": "function"
+        },
         {
             "inputs": [
                 {
@@ -74,6 +256,148 @@ const contractAddress = '0xb0B04f4915d604C5e2Fab0256974BeE45FD52453';
             "type": "event"
         },
         {
+            "inputs": [
+                {
+                    "internalType": "uint256",
+                    "name": "amount",
+                    "type": "uint256"
+                }
+            ],
+            "name": "buyBond",
+            "outputs": [
+                {
+                    "internalType": "bool",
+                    "name": "",
+                    "type": "bool"
+                }
+            ],
+            "stateMutability": "nonpayable",
+            "type": "function"
+        },
+        {
+            "inputs": [
+                {
+                    "internalType": "uint256",
+                    "name": "amount",
+                    "type": "uint256"
+                }
+            ],
+            "name": "buyCoin",
+            "outputs": [
+                {
+                    "internalType": "bool",
+                    "name": "",
+                    "type": "bool"
+                }
+            ],
+            "stateMutability": "payable",
+            "type": "function"
+        },
+        {
+            "inputs": [
+                {
+                    "internalType": "uint256",
+                    "name": "amount",
+                    "type": "uint256"
+                }
+            ],
+            "name": "buyShare",
+            "outputs": [
+                {
+                    "internalType": "bool",
+                    "name": "",
+                    "type": "bool"
+                }
+            ],
+            "stateMutability": "payable",
+            "type": "function"
+        },
+        {
+            "inputs": [
+                {
+                    "internalType": "address",
+                    "name": "spender",
+                    "type": "address"
+                },
+                {
+                    "internalType": "uint256",
+                    "name": "subtractedValue",
+                    "type": "uint256"
+                }
+            ],
+            "name": "decreaseAllowance",
+            "outputs": [
+                {
+                    "internalType": "bool",
+                    "name": "",
+                    "type": "bool"
+                }
+            ],
+            "stateMutability": "nonpayable",
+            "type": "function"
+        },
+        {
+            "inputs": [],
+            "name": "executeBond",
+            "outputs": [
+                {
+                    "internalType": "bool",
+                    "name": "",
+                    "type": "bool"
+                }
+            ],
+            "stateMutability": "payable",
+            "type": "function"
+        },
+        {
+            "inputs": [
+                {
+                    "internalType": "address",
+                    "name": "spender",
+                    "type": "address"
+                },
+                {
+                    "internalType": "uint256",
+                    "name": "addedValue",
+                    "type": "uint256"
+                }
+            ],
+            "name": "increaseAllowance",
+            "outputs": [
+                {
+                    "internalType": "bool",
+                    "name": "",
+                    "type": "bool"
+                }
+            ],
+            "stateMutability": "nonpayable",
+            "type": "function"
+        },
+        {
+            "inputs": [
+                {
+                    "internalType": "address",
+                    "name": "to",
+                    "type": "address"
+                },
+                {
+                    "internalType": "uint256",
+                    "name": "amount",
+                    "type": "uint256"
+                }
+            ],
+            "name": "mint",
+            "outputs": [
+                {
+                    "internalType": "bool",
+                    "name": "",
+                    "type": "bool"
+                }
+            ],
+            "stateMutability": "nonpayable",
+            "type": "function"
+        },
+        {
             "anonymous": false,
             "inputs": [
                 {
@@ -119,6 +443,108 @@ const contractAddress = '0xb0B04f4915d604C5e2Fab0256974BeE45FD52453';
             "type": "event"
         },
         {
+            "inputs": [
+                {
+                    "internalType": "address",
+                    "name": "account",
+                    "type": "address"
+                }
+            ],
+            "name": "removeBurner",
+            "outputs": [],
+            "stateMutability": "nonpayable",
+            "type": "function"
+        },
+        {
+            "inputs": [
+                {
+                    "internalType": "address",
+                    "name": "account",
+                    "type": "address"
+                }
+            ],
+            "name": "removeMinter",
+            "outputs": [],
+            "stateMutability": "nonpayable",
+            "type": "function"
+        },
+        {
+            "inputs": [],
+            "name": "renounceOwnership",
+            "outputs": [],
+            "stateMutability": "nonpayable",
+            "type": "function"
+        },
+        {
+            "inputs": [
+                {
+                    "internalType": "uint256",
+                    "name": "amount",
+                    "type": "uint256"
+                }
+            ],
+            "name": "sellCoin",
+            "outputs": [
+                {
+                    "internalType": "bool",
+                    "name": "",
+                    "type": "bool"
+                }
+            ],
+            "stateMutability": "nonpayable",
+            "type": "function"
+        },
+        {
+            "inputs": [
+                {
+                    "internalType": "uint256",
+                    "name": "_scPrice",
+                    "type": "uint256"
+                }
+            ],
+            "name": "setScPrice",
+            "outputs": [],
+            "stateMutability": "nonpayable",
+            "type": "function"
+        },
+        {
+            "inputs": [
+                {
+                    "internalType": "bool",
+                    "name": "_autoScPrice",
+                    "type": "bool"
+                }
+            ],
+            "name": "setScPriceAuto",
+            "outputs": [],
+            "stateMutability": "nonpayable",
+            "type": "function"
+        },
+        {
+            "inputs": [
+                {
+                    "internalType": "address",
+                    "name": "recipient",
+                    "type": "address"
+                },
+                {
+                    "internalType": "uint256",
+                    "name": "amount",
+                    "type": "uint256"
+                }
+            ],
+            "name": "transfer",
+            "outputs": [
+                {
+                    "internalType": "bool",
+                    "name": "",
+                    "type": "bool"
+                }
+            ],
+            "stateMutability": "nonpayable",
+            "type": "function"
+        },
+        {
             "anonymous": false,
             "inputs": [
                 {
@@ -147,33 +573,12 @@ const contractAddress = '0xb0B04f4915d604C5e2Fab0256974BeE45FD52453';
             "inputs": [
                 {
                     "internalType": "address",
-                    "name": "account",
+                    "name": "sender",
                     "type": "address"
-                }
-            ],
-            "name": "addBurner",
-            "outputs": [],
-            "stateMutability": "nonpayable",
-            "type": "function"
-        },
-        {
-            "inputs": [
+                },
                 {
                     "internalType": "address",
-                    "name": "account",
-                    "type": "address"
-                }
-            ],
-            "name": "addMinter",
-            "outputs": [],
-            "stateMutability": "nonpayable",
-            "type": "function"
-        },
-        {
-            "inputs": [
-                {
-                    "internalType": "address",
-                    "name": "account",
+                    "name": "recipient",
                     "type": "address"
                 },
                 {
@@ -182,7 +587,7 @@ const contractAddress = '0xb0B04f4915d604C5e2Fab0256974BeE45FD52453';
                     "type": "uint256"
                 }
             ],
-            "name": "addShareHolder",
+            "name": "transferFrom",
             "outputs": [
                 {
                     "internalType": "bool",
@@ -190,6 +595,19 @@ const contractAddress = '0xb0B04f4915d604C5e2Fab0256974BeE45FD52453';
                     "type": "bool"
                 }
             ],
+            "stateMutability": "nonpayable",
+            "type": "function"
+        },
+        {
+            "inputs": [
+                {
+                    "internalType": "address",
+                    "name": "newOwner",
+                    "type": "address"
+                }
+            ],
+            "name": "transferOwnership",
+            "outputs": [],
             "stateMutability": "nonpayable",
             "type": "function"
         },
@@ -218,19 +636,8 @@ const contractAddress = '0xb0B04f4915d604C5e2Fab0256974BeE45FD52453';
             "type": "function"
         },
         {
-            "inputs": [
-                {
-                    "internalType": "address",
-                    "name": "spender",
-                    "type": "address"
-                },
-                {
-                    "internalType": "uint256",
-                    "name": "amount",
-                    "type": "uint256"
-                }
-            ],
-            "name": "approve",
+            "inputs": [],
+            "name": "autoScPrice",
             "outputs": [
                 {
                     "internalType": "bool",
@@ -238,7 +645,7 @@ const contractAddress = '0xb0B04f4915d604C5e2Fab0256974BeE45FD52453';
                     "type": "bool"
                 }
             ],
-            "stateMutability": "nonpayable",
+            "stateMutability": "view",
             "type": "function"
         },
         {
@@ -274,76 +681,6 @@ const contractAddress = '0xb0B04f4915d604C5e2Fab0256974BeE45FD52453';
             "type": "function"
         },
         {
-            "inputs": [
-                {
-                    "internalType": "uint256",
-                    "name": "amount",
-                    "type": "uint256"
-                }
-            ],
-            "name": "burn",
-            "outputs": [
-                {
-                    "internalType": "bool",
-                    "name": "",
-                    "type": "bool"
-                }
-            ],
-            "stateMutability": "nonpayable",
-            "type": "function"
-        },
-        {
-            "inputs": [
-                {
-                    "internalType": "uint256",
-                    "name": "amount",
-                    "type": "uint256"
-                }
-            ],
-            "name": "buyBond",
-            "outputs": [
-                {
-                    "internalType": "bool",
-                    "name": "",
-                    "type": "bool"
-                }
-            ],
-            "stateMutability": "nonpayable",
-            "type": "function"
-        },
-        {
-            "inputs": [
-                {
-                    "internalType": "uint256",
-                    "name": "amount",
-                    "type": "uint256"
-                }
-            ],
-            "name": "buyShare",
-            "outputs": [
-                {
-                    "internalType": "bool",
-                    "name": "",
-                    "type": "bool"
-                }
-            ],
-            "stateMutability": "payable",
-            "type": "function"
-        },
-        {
-            "inputs": [],
-            "name": "dc",
-            "outputs": [
-                {
-                    "internalType": "contract DistributionCampaign",
-                    "name": "",
-                    "type": "address"
-                }
-            ],
-            "stateMutability": "view",
-            "type": "function"
-        },
-        {
             "inputs": [],
             "name": "decimals",
             "outputs": [
@@ -354,43 +691,6 @@ const contractAddress = '0xb0B04f4915d604C5e2Fab0256974BeE45FD52453';
                 }
             ],
             "stateMutability": "view",
-            "type": "function"
-        },
-        {
-            "inputs": [
-                {
-                    "internalType": "address",
-                    "name": "spender",
-                    "type": "address"
-                },
-                {
-                    "internalType": "uint256",
-                    "name": "subtractedValue",
-                    "type": "uint256"
-                }
-            ],
-            "name": "decreaseAllowance",
-            "outputs": [
-                {
-                    "internalType": "bool",
-                    "name": "",
-                    "type": "bool"
-                }
-            ],
-            "stateMutability": "nonpayable",
-            "type": "function"
-        },
-        {
-            "inputs": [],
-            "name": "distributeCoins",
-            "outputs": [
-                {
-                    "internalType": "bool",
-                    "name": "",
-                    "type": "bool"
-                }
-            ],
-            "stateMutability": "nonpayable",
             "type": "function"
         },
         {
@@ -407,16 +707,22 @@ const contractAddress = '0xb0B04f4915d604C5e2Fab0256974BeE45FD52453';
             "type": "function"
         },
         {
-            "inputs": [],
-            "name": "executeBond",
-            "outputs": [
+            "inputs": [
                 {
-                    "internalType": "bool",
-                    "name": "",
-                    "type": "bool"
+                    "internalType": "uint256",
+                    "name": "timestamp",
+                    "type": "uint256"
                 }
             ],
-            "stateMutability": "nonpayable",
+            "name": "getAutoPrice",
+            "outputs": [
+                {
+                    "internalType": "uint256",
+                    "name": "",
+                    "type": "uint256"
+                }
+            ],
+            "stateMutability": "view",
             "type": "function"
         },
         {
@@ -459,7 +765,52 @@ const contractAddress = '0xb0B04f4915d604C5e2Fab0256974BeE45FD52453';
                     "type": "address"
                 }
             ],
+            "name": "getBondConversionFee",
+            "outputs": [
+                {
+                    "internalType": "uint256",
+                    "name": "",
+                    "type": "uint256"
+                }
+            ],
+            "stateMutability": "view",
+            "type": "function"
+        },
+        {
+            "inputs": [],
             "name": "getBondPrice",
+            "outputs": [
+                {
+                    "internalType": "uint256",
+                    "name": "",
+                    "type": "uint256"
+                }
+            ],
+            "stateMutability": "view",
+            "type": "function"
+        },
+        {
+            "inputs": [
+                {
+                    "internalType": "address",
+                    "name": "bondHolder",
+                    "type": "address"
+                }
+            ],
+            "name": "getBondPrice",
+            "outputs": [
+                {
+                    "internalType": "uint256",
+                    "name": "",
+                    "type": "uint256"
+                }
+            ],
+            "stateMutability": "view",
+            "type": "function"
+        },
+        {
+            "inputs": [],
+            "name": "getBuyPrice",
             "outputs": [
                 {
                     "internalType": "uint256",
@@ -475,7 +826,7 @@ const contractAddress = '0xb0B04f4915d604C5e2Fab0256974BeE45FD52453';
             "name": "getMsgSender",
             "outputs": [
                 {
-                    "internalType": "address",
+                    "internalType": "address payable",
                     "name": "",
                     "type": "address"
                 }
@@ -548,19 +899,40 @@ const contractAddress = '0xb0B04f4915d604C5e2Fab0256974BeE45FD52453';
             "type": "function"
         },
         {
-            "inputs": [
-                {
-                    "internalType": "address",
-                    "name": "spender",
-                    "type": "address"
-                },
+            "inputs": [],
+            "name": "icoCoinsPerShare",
+            "outputs": [
                 {
                     "internalType": "uint256",
-                    "name": "addedValue",
+                    "name": "",
                     "type": "uint256"
                 }
             ],
-            "name": "increaseAllowance",
+            "stateMutability": "view",
+            "type": "function"
+        },
+        {
+            "inputs": [],
+            "name": "icoPrice",
+            "outputs": [
+                {
+                    "internalType": "uint256",
+                    "name": "",
+                    "type": "uint256"
+                }
+            ],
+            "stateMutability": "view",
+            "type": "function"
+        },
+        {
+            "inputs": [
+                {
+                    "internalType": "address",
+                    "name": "bondHolder",
+                    "type": "address"
+                }
+            ],
+            "name": "isBondHolder",
             "outputs": [
                 {
                     "internalType": "bool",
@@ -568,7 +940,7 @@ const contractAddress = '0xb0B04f4915d604C5e2Fab0256974BeE45FD52453';
                     "type": "bool"
                 }
             ],
-            "stateMutability": "nonpayable",
+            "stateMutability": "view",
             "type": "function"
         },
         {
@@ -629,27 +1001,29 @@ const contractAddress = '0xb0B04f4915d604C5e2Fab0256974BeE45FD52453';
             "type": "function"
         },
         {
-            "inputs": [
-                {
-                    "internalType": "address",
-                    "name": "to",
-                    "type": "address"
-                },
+            "inputs": [],
+            "name": "maxPrice",
+            "outputs": [
                 {
                     "internalType": "uint256",
-                    "name": "amount",
+                    "name": "",
                     "type": "uint256"
                 }
             ],
-            "name": "mint",
+            "stateMutability": "view",
+            "type": "function"
+        },
+        {
+            "inputs": [],
+            "name": "minPrice",
             "outputs": [
                 {
-                    "internalType": "bool",
+                    "internalType": "uint256",
                     "name": "",
-                    "type": "bool"
+                    "type": "uint256"
                 }
             ],
-            "stateMutability": "nonpayable",
+            "stateMutability": "view",
             "type": "function"
         },
         {
@@ -679,63 +1053,6 @@ const contractAddress = '0xb0B04f4915d604C5e2Fab0256974BeE45FD52453';
             "type": "function"
         },
         {
-            "inputs": [
-                {
-                    "internalType": "address",
-                    "name": "account",
-                    "type": "address"
-                },
-                {
-                    "internalType": "uint256",
-                    "name": "amount",
-                    "type": "uint256"
-                }
-            ],
-            "name": "reduceShares",
-            "outputs": [
-                {
-                    "internalType": "bool",
-                    "name": "",
-                    "type": "bool"
-                }
-            ],
-            "stateMutability": "nonpayable",
-            "type": "function"
-        },
-        {
-            "inputs": [
-                {
-                    "internalType": "address",
-                    "name": "account",
-                    "type": "address"
-                }
-            ],
-            "name": "removeBurner",
-            "outputs": [],
-            "stateMutability": "nonpayable",
-            "type": "function"
-        },
-        {
-            "inputs": [
-                {
-                    "internalType": "address",
-                    "name": "account",
-                    "type": "address"
-                }
-            ],
-            "name": "removeMinter",
-            "outputs": [],
-            "stateMutability": "nonpayable",
-            "type": "function"
-        },
-        {
-            "inputs": [],
-            "name": "renounceOwnership",
-            "outputs": [],
-            "stateMutability": "nonpayable",
-            "type": "function"
-        },
-        {
             "inputs": [],
             "name": "scPrice",
             "outputs": [
@@ -746,19 +1063,6 @@ const contractAddress = '0xb0B04f4915d604C5e2Fab0256974BeE45FD52453';
                 }
             ],
             "stateMutability": "view",
-            "type": "function"
-        },
-        {
-            "inputs": [
-                {
-                    "internalType": "uint256",
-                    "name": "newPrice",
-                    "type": "uint256"
-                }
-            ],
-            "name": "setScPrice",
-            "outputs": [],
-            "stateMutability": "nonpayable",
             "type": "function"
         },
         {
@@ -798,72 +1102,6 @@ const contractAddress = '0xb0B04f4915d604C5e2Fab0256974BeE45FD52453';
                 }
             ],
             "stateMutability": "view",
-            "type": "function"
-        },
-        {
-            "inputs": [
-                {
-                    "internalType": "address",
-                    "name": "recipient",
-                    "type": "address"
-                },
-                {
-                    "internalType": "uint256",
-                    "name": "amount",
-                    "type": "uint256"
-                }
-            ],
-            "name": "transfer",
-            "outputs": [
-                {
-                    "internalType": "bool",
-                    "name": "",
-                    "type": "bool"
-                }
-            ],
-            "stateMutability": "nonpayable",
-            "type": "function"
-        },
-        {
-            "inputs": [
-                {
-                    "internalType": "address",
-                    "name": "sender",
-                    "type": "address"
-                },
-                {
-                    "internalType": "address",
-                    "name": "recipient",
-                    "type": "address"
-                },
-                {
-                    "internalType": "uint256",
-                    "name": "amount",
-                    "type": "uint256"
-                }
-            ],
-            "name": "transferFrom",
-            "outputs": [
-                {
-                    "internalType": "bool",
-                    "name": "",
-                    "type": "bool"
-                }
-            ],
-            "stateMutability": "nonpayable",
-            "type": "function"
-        },
-        {
-            "inputs": [
-                {
-                    "internalType": "address",
-                    "name": "newOwner",
-                    "type": "address"
-                }
-            ],
-            "name": "transferOwnership",
-            "outputs": [],
-            "stateMutability": "nonpayable",
             "type": "function"
         }
     ];
