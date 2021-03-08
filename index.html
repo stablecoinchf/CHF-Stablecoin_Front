@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <style>
+    <!-- style>
         table, th, td {
           border: 1px solid black;
           border-collapse: collapse;
         }
-    </style>
+    </style-->
 
     <meta charset="UTF-8">
     <link rel="stylesheet" type="text/css" href="main.css">
@@ -19,6 +19,7 @@
         var account, sc , bc;
 
         window.addEventListener("load", () => connectToMetamask(), false);
+
 
         async function getInfos() {
             var err,accounts ;
@@ -37,13 +38,24 @@
                 account = accounts[0];
             }
 
+
+            var htmlAccountsListBox = "<SELECT onChange=updateAddress() name='listaccounts' id='listaccounts'>";
+
             var htmlAccounts = "";
             for (var i = 0; i < accounts.length; i++) {
-                htmlAccounts = htmlAccounts + "<br>" + accounts[i]
+                htmlAccounts = htmlAccounts + "<br>" + accounts[i];
+                if (account == accounts[i]) {
+                    htmlAccountsListBox = htmlAccountsListBox + "<option selected value='"+accounts[i]+"''>"+ accounts[i] +"</option>";
+                } else {
+                    htmlAccountsListBox = htmlAccountsListBox + "<option value='"+accounts[i]+"''>"+ accounts[i] +"</option>";
+                }
+                
+                
             } 
 
-            document.getElementById("currentAccount").innerHTML = account;
-            document.getElementById("accounts").innerHTML = htmlAccounts;
+            htmlAccountsListBox = htmlAccountsListBox + "</SELECT>";
+
+            document.getElementById("currentAccount").innerHTML = htmlAccountsListBox;
             document.getElementById("contractAddress").innerHTML = contractAddress;
 
             document.getElementById("totalSupplyCoin").innerHTML = totalSupplyCoin + " BCHF";
@@ -106,6 +118,7 @@
             try { 
 			    var contractBalanceETH = await sc.methods.getBalanceETH().call();
                 contractBalanceETH = web3.utils.fromWei(contractBalanceETH, 'ether');
+                contractBalanceETH = Math.round(contractBalanceETH*100000000)/100000000;
                 document.getElementById("contractBalanceETH").innerHTML = contractBalanceETH + " ETH";
             } catch (err) {
                 document.getElementById("contractBalanceETH").innerHTML = err;
@@ -113,7 +126,8 @@
 
             try { 
 			    var totalSupplyCoin = await sc.methods.totalSupply().call();
-                // totalSupplyCoin = web3.utils.fromWei(totalSupplyCoin, 'ether');
+                totalSupplyCoin = web3.utils.fromWei(totalSupplyCoin, 'ether');
+                totalSupplyCoin = Math.round(totalSupplyCoin*100)/100;
                 document.getElementById("totalSupplyCoin").innerHTML = totalSupplyCoin + " " + web3ScSymbol;
             } catch (err) {
                 document.getElementById("totalSupplyCoin").innerHTML = err;
@@ -121,7 +135,8 @@
 
             try { 
 			    var totalSupplyShares = await sc.methods.totalNoOfShares().call();
-                // totalSupplyShares = web3.utils.fromWei(totalSupplyShares, 'ether');
+                totalSupplyShares = web3.utils.fromWei(totalSupplyShares, 'ether');
+                totalSupplyShares = Math.round(totalSupplyShares*100)/100;
                 document.getElementById("totalSupplyShares").innerHTML = totalSupplyShares + " " + web3ScSymbol+"S";
             } catch (err) {
                 document.getElementById("totalSupplyShares").innerHTML = err;
@@ -181,6 +196,7 @@
                 await web3.eth.getBalance(account, function (error, wei) {
                     if (!error) {
                         var balance = web3.utils.fromWei(wei, 'ether');
+                        balance = Math.round(balance*100000000)/100000000;
                         document.getElementById("balanceETH").innerHTML = balance + " ETH";
                     }
                 });
@@ -190,6 +206,8 @@
 
             try { 
 			    var balanceBitCHF = await sc.methods.balanceOf(account).call();
+                balanceBitCHF = web3.utils.fromWei(balanceBitCHF, 'ether');
+                balanceBitCHF = Math.round(balanceBitCHF*100)/100;
                 document.getElementById("balanceBCHF").innerHTML = balanceBitCHF + " " + web3ScSymbol;
             } catch (err) {
                 document.getElementById("balanceBCHF").innerHTML = err;
@@ -197,6 +215,8 @@
            
             try {
 			    var balanceBitCHFShares = await sc.methods.getShareAmount(account).call();
+                balanceBitCHFShares = web3.utils.fromWei(balanceBitCHFShares, 'ether');
+                balanceBitCHFShares = Math.round(balanceBitCHFShares*100)/100;
                 document.getElementById("balanceBCHFShares").innerHTML = balanceBitCHFShares + " " + web3ScSymbol +"S";
             } catch (err) {
                 document.getElementById("balanceBCHFShares").innerHTML = err;
@@ -204,6 +224,8 @@
 
             try {
 			    var balanceBitCHFBonds = web3GetBondAmount;
+                balanceBitCHFBonds = web3.utils.fromWei(balanceBitCHFBonds, 'ether');
+                balanceBitCHFBonds = Math.round(balanceBitCHFBonds*100)/100;
                 document.getElementById("balanceBCHFBonds").innerHTML = balanceBitCHFBonds;
                 document.getElementById("bondsToExecute").innerHTML = balanceBitCHFBonds;
                 document.getElementById("convertedCoins").innerHTML = balanceBitCHFBonds;
@@ -219,6 +241,7 @@
                 var sharePriceETH = (priceCHFETH * sharePriceCHF) * 10000000000;
                 coinPriceETH = Math.round(coinPriceETH);
                 sharePriceETH = web3.utils.fromWei(sharePriceETH.toString(), 'ether');
+                sharePriceETH = Math.round(sharePriceETH * 100000000) / 100000000;
                 document.getElementById("sharePrice").innerHTML = (Math.round(sharePriceCHF * 1000) / 1000) + " CHF (" + sharePriceETH + " ETH)";
             } catch (err) {
                 document.getElementById("sharePrice").innerHTML = err;
@@ -231,6 +254,7 @@
                 var coinPriceETH = (priceCHFETH * coinPriceCHF) * 10000000000;
                 coinPriceETH = Math.round(coinPriceETH);
                 coinPriceETH = web3.utils.fromWei(coinPriceETH.toString(), 'ether');
+                coinPriceETH = Math.round(coinPriceETH * 100000000) / 100000000;
                 document.getElementById("coinPrice").innerHTML = (Math.round(coinPriceCHF * 1000) / 1000) + " CHF (" + coinPriceETH + " ETH)";
             } catch (err) {
                 document.getElementById("coinPrice").innerHTML = err;
@@ -243,6 +267,7 @@
                 var coinPriceETH = (priceCHFETH * coinPriceCHF) * 10000000000;
                 coinPriceETH = Math.round(coinPriceETH);
                 coinPriceETH = web3.utils.fromWei(coinPriceETH.toString(), 'ether');
+                coinPriceETH = Math.round(coinPriceETH * 100000000) / 100000000;
                 document.getElementById("coinPriceSell").innerHTML = (Math.round(coinPriceCHF * 1000) / 1000)  + " CHF (" + coinPriceETH + " ETH)";
             } catch (err) {
                 document.getElementById("coinPriceSell").innerHTML = err;
@@ -250,11 +275,11 @@
             if (buyPrice > 0)  {
                 document.getElementById("numberOfCoinsSell").disabled = false;
                 document.getElementById("btnSell").disabled = false;
-                document.getElementById("errorsSellCoins").innerHTML = "Selling coins enabled. <br> <b>Contract is bying coins</b> bacause the curent price is not in the expected range.";
+                document.getElementById("errorsSellCoins").innerHTML = "<br><i> Contract is bying coins bacause the curent price is not in the expected range.</i>";
             }   else  {
                 document.getElementById("numberOfCoinsSell").disabled = true;
                 document.getElementById("btnSell").disabled = true;
-                document.getElementById("errorsSellCoins").innerHTML = "Selling coins disabled. <br/> Contract is not bying coins bacause the curent price is in the expected range.";
+                document.getElementById("errorsSellCoins").innerHTML = "<br/><i> Contract is not bying coins bacause the curent price is in the expected range.</i>";
             }
 
             try {
@@ -268,17 +293,19 @@
                 if (web3BcAmount>0){
                     document.getElementById("numberOfBonds").disabled = false;
                     document.getElementById("btnBuyBonds").disabled = false;
-                    document.getElementById("errorsBuyBonds").innerHTML = "<b>Buying bonds enabled.</b> <br> <b>Contract is selling " + web3BcAmount +" bonds</b> bacause the curent price is not in the expected range.";
+                    var bcAmount = web3.utils.fromWei(web3BcAmount, 'ether');
+                    bcAmount = Math.round(bcAmount);
+                    document.getElementById("errorsBuyBonds").innerHTML = "<i><br> Contract is selling <b>" + bcAmount +"</b> bonds bacause the curent price is not in the expected range.</i>";
                 } else {
                     document.getElementById("numberOfBonds").disabled = true;
                     document.getElementById("btnBuyBonds").disabled = true;
-                    document.getElementById("errorsBuyBonds").innerHTML = "<b>Buying bonds disabled.</b> <br> Contract is not selling bonds bacause they are sold out. <br/> The available amout of bonds for sale is " + web3BcAmount ;
+                    document.getElementById("errorsBuyBonds").innerHTML = "<i><br> Contract is not selling bonds bacause they are sold out. <br/> The available amout of bonds for sale is " + web3BcAmount + "</i>";
                 }
 
             }   else  {
                 document.getElementById("btnBuyBonds").disabled = true;
                 document.getElementById("numberOfBonds").disabled = true;
-                document.getElementById("errorsBuyBonds").innerHTML = "<b>Buying bonds disabled.</b> <br/> Contract is not selling bonds bacause the curent price is in the expected range.";
+                document.getElementById("errorsBuyBonds").innerHTML = "<i><br/> Contract is not selling bonds bacause the curent price is in the expected range.</i>";
             }
 
             var targetPrice = 10000000000;
@@ -288,21 +315,21 @@
                     var bondConversionFee = web3.utils.fromWei(bondConversionFee, 'ether');
                     var bondConversionFeeCHF = Math.round(bondConversionFee * web3PriceETHCHF / 1000000) / 100;
                     document.getElementById("btnExecuteBonds").disabled = false;
-                    document.getElementById("errorsExecuteBonds").innerHTML = "<b>Converting bonds enabled, </b> <br>bacause the current price of the coin is greater than 1 CHF.<br> Mining fee: " + bondConversionFeeCHF + " CHF (" + bondConversionFee +" ETH)";
+                    document.getElementById("errorsExecuteBonds").innerHTML = "<i><br> Mining fee: <b>" + bondConversionFeeCHF + " CHF</b> (" + bondConversionFee +" ETH) </i>";
                 } else {
                     document.getElementById("btnExecuteBonds").disabled = true;
-                    document.getElementById("errorsExecuteBonds").innerHTML = "<b>Converting bonds disabled. </b> <br>No bonds to convert.";
+                    document.getElementById("errorsExecuteBonds").innerHTML = "<i><br>No bonds to convert.</i>";
                 }
                 
             }   else  {
                 document.getElementById("btnExecuteBonds").disabled = true;
-                document.getElementById("errorsExecuteBonds").innerHTML = "<b>Converting bonds disabled </b> <br>because the current price of the coin is less than 1 CHF";
-            }
+                document.getElementById("errorsExecuteBonds").innerHTML = "<br><i>Converting bonds not possible because the current price of the coin is less than 1 CHF</i>";
+            }   
 
         }
 
-        async function updateAddress() {
-            account = document.getElementById("currentAccountInput").value;
+        function updateAddress() {
+            account = document.getElementById("listaccounts").value;
             getInfos();
         }
 
@@ -326,6 +353,7 @@
             var sharePriceCHF = ((priceICO / 100000000) / 100) * 10;
             var transactionPrice = (priceCHFETH * sharePriceCHF * noOfShares) * 10000000000;
             try {
+                noOfShares = web3.utils.toWei(noOfShares, 'ether');
                 await sc.methods.buyShare(noOfShares).send({ from: account, gas: 3000000, value: transactionPrice});
                 getInfos();
 			} catch (err) {
@@ -352,7 +380,9 @@
             var coinPriceCHF = (maxPrice / 100000000) / 100;
             var transactionPrice = (priceCHFETH * coinPriceCHF * noOfCoins) * 10000000000;
             try {
+                noOfCoins = web3.utils.toWei(noOfCoins, 'ether');
                 await sc.methods.buyCoin(noOfCoins).send({ from: account, gas: 3000000, value: transactionPrice});
+                // document.getElementById("errorsBuyCoins").innerHTML = noOfCoins;
                 getInfos();
 			} catch (err) {
 				document.getElementById("errorsBuyCoins").innerHTML = err;
@@ -374,10 +404,11 @@
             }
            
             try {
+                noOfCoins = web3.utils.toWei(noOfCoins, 'ether');
                 await sc.methods.sellCoin(noOfCoins).send({ from: account, gas: 3000000});
                 getInfos();
 			} catch (err) {
-				document.getElementById("errorsSellCoins").innerHTML = err;
+				document.getElementById("errorsSellCoins").innerHTML = err; 
 			}
         }
 
@@ -397,6 +428,7 @@
             
 
             try {
+                noOfBonds = web3.utils.toWei(noOfBonds, 'ether');
                 await sc.methods.buyBond(noOfBonds).send({ from: account, gas: 3000000});
                 getInfos();
 			} catch (err) {
@@ -413,7 +445,7 @@
             }
             try {
                 var bondConversionFee = await sc.methods.getBondConversionFee(account).call();
-                await sc.methods.executeBond().send({ from: account, gas: 3000000, value: bondConversionFee});
+                await sc.methods.convertBond().send({ from: account, gas: 3000000, value: bondConversionFee});
                 getInfos();
 			} catch (err) {
 				document.getElementById("errorsExecuteBonds").innerHTML = err;
@@ -473,7 +505,7 @@
     <table>
         <tr>
             <td><b>Acount :</b> <span id="currentAccount"></span></td>
-            <td></td>
+            <td width="20%"></td>
             <td><b>Contract :</b> <span id="contractAddress"></span></td>    
         </tr>
         <tr valign="top">
@@ -491,7 +523,7 @@
                 <br />
                 <b> Amount of bonds :</b> <span id="balanceBCHFBonds"></span>
             </td> 
-            <td width="25%"></td>
+            <td></td>
             <td >
                 <br />
                 <b> Price ETH :</b>  <span id="priceETHCHF"></span>,
@@ -507,72 +539,60 @@
         </table>
         <table>
         <tr valign="top">
-            <td>
+            <td width="33%">
                 <br />
-                <b>ICO : Buy shares & 10 coins pro share</b>
+                <b>ICO (Initial coin offering) </b>
+                <br />
+                <i>Buy shares & 10 coins pro share</i>
                 <br />
                 <br />
-                Number of shares: <input type="number"  id="numberOfShares" name="numberOfShares" ></input>
+                Number of shares: <input type="number"  id="numberOfShares" name="numberOfShares" >
+                </input><button onclick="buyShares()">Buy</button>
                 <br />
-                <b>ICO share price:</b> <span id="sharePrice"></span>
-                <button onclick="buyShares()">Buy</button>
+                <b>ICO share price: </b> <span id="sharePrice"></span>
                 <span id="errorsBuyShares"></span>
             </td>
-            <td>
+            <td width="33%">
                 <br />
                 <b>Buy Coin</b>
                 <br />
                 <br />
                 Number of coins: <input type="number" id="numberOfCoins" name="numberOfCoins" ></input>
-                <br />
-                <b>Coin price</b> <span id="coinPrice"></span>
                 <button onclick="buyCoins()">Buy</button>
+                <br />
+                <b>Coin price: </b> <span id="coinPrice"></span>
                 <span id="errorsBuyCoins"></span>
-            </td>
-            <td> 
+                <br />
+                <br />
                 <br />
                 <b>Sell Coin</b>
                 <br />
                 <br />
                 Number of coins: <input type="number" id="numberOfCoinsSell" name="numberOfCoinsSell" ></input>
-                <br />
-                <b>Coin price</b> <span id="coinPriceSell"></span>
                 <button onclick="sellCoins()" id="btnSell" name="btnSell" >Sell</button>
+                <br />
+                <b>Coin price: </b> <span id="coinPriceSell"></span>
                 <span id="errorsSellCoins"></span>
             </td>
-            <td> 
+            <td width="33%"> 
                 <br />
                 <b>Buy Bond</b>
                 <br />
                 <br />
                 Number of bonds: <input type="number" id="numberOfBonds" name="numberOfBonds" ></input>
-                <br />
-                <b>Bond price</b> <span id="bondPrice"></span>
                 <button onclick="buyBonds()" id="btnBuyBonds" name="btnBuyBonds" >Buy</button>
+                <br />
+                <b>Bond price:  </b> <span id="bondPrice"></span>
                 <span id="errorsBuyBonds"></span>
                 <br />
                 <br />
                 <br />
-                <b>Convert <span id="bondsToExecute"></span> bonds</b> <br/> to <span id="convertedCoins"></span> coins and <span id="convertedShares"></span> shares.
                 <br />
                 <button onclick="executeBonds()" id="btnExecuteBonds" name="btnExecuteBonds" >Convert</button>
+                <br />
+                Convert <b><span id="bondsToExecute"></span></b> bonds <br/> to <span id="convertedCoins"></span> coins and <span id="convertedShares"></span> shares.
+                <br />
                 <span id="errorsExecuteBonds"></span>
-            </td>
-        </tr>
-        <tr valign="top">
-            <td colspan="2">
-                <br />
-                <b>Update account</b>
-                <br />
-                <br />
-                New account address: <input type="text" id="currentAccountInput" name="currentAccountInput" ></input>
-                <button onclick="updateAddress()">Update</button>
-            </td>
-            <td colspan="2">
-                <br />
-                Available accounts:
-                <br />    
-                <span id="accounts"></span>
             </td>
         </tr>
     </table>   

@@ -1,4 +1,4 @@
-const contractAddress = '0x8a0c3CBED068662300255DE56012546782c8c48c';	
+const contractAddress = '0x51416b8B41Ae0769Ed92E1994CDF383ff6AC7736';	
 
     const bondCampaignAbi = [
         {
@@ -313,6 +313,19 @@ const contractAddress = '0x8a0c3CBED068662300255DE56012546782c8c48c';
             "type": "function"
         },
         {
+            "inputs": [],
+            "name": "convertBond",
+            "outputs": [
+                {
+                    "internalType": "bool",
+                    "name": "",
+                    "type": "bool"
+                }
+            ],
+            "stateMutability": "payable",
+            "type": "function"
+        },
+        {
             "inputs": [
                 {
                     "internalType": "address",
@@ -334,19 +347,6 @@ const contractAddress = '0x8a0c3CBED068662300255DE56012546782c8c48c';
                 }
             ],
             "stateMutability": "nonpayable",
-            "type": "function"
-        },
-        {
-            "inputs": [],
-            "name": "executeBond",
-            "outputs": [
-                {
-                    "internalType": "bool",
-                    "name": "",
-                    "type": "bool"
-                }
-            ],
-            "stateMutability": "payable",
             "type": "function"
         },
         {
@@ -675,6 +675,19 @@ const contractAddress = '0x8a0c3CBED068662300255DE56012546782c8c48c';
                     "internalType": "contract BondCampaign",
                     "name": "",
                     "type": "address"
+                }
+            ],
+            "stateMutability": "view",
+            "type": "function"
+        },
+        {
+            "inputs": [],
+            "name": "bonConversionFee",
+            "outputs": [
+                {
+                    "internalType": "uint256",
+                    "name": "",
+                    "type": "uint256"
                 }
             ],
             "stateMutability": "view",
