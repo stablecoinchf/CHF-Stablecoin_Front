@@ -1,4 +1,4 @@
-const contractAddress = '0x51416b8B41Ae0769Ed92E1994CDF383ff6AC7736';	
+const contractAddress = '0xe789e97EcfA64a67f79836F91534eC1d98bF0388';	
 
     const bondCampaignAbi = [
         {
@@ -11,6 +11,11 @@ const contractAddress = '0x51416b8B41Ae0769Ed92E1994CDF383ff6AC7736';
                 {
                     "internalType": "uint256",
                     "name": "totalsupply_",
+                    "type": "uint256"
+                },
+                {
+                    "internalType": "uint256",
+                    "name": "minPrice_",
                     "type": "uint256"
                 }
             ],
@@ -38,9 +43,67 @@ const contractAddress = '0x51416b8B41Ae0769Ed92E1994CDF383ff6AC7736';
                     "type": "uint256"
                 }
             ],
-            "name": "decreaseAmount",
+            "name": "bondSold",
             "outputs": [],
             "stateMutability": "nonpayable",
+            "type": "function"
+        },
+        {
+            "inputs": [
+                {
+                    "internalType": "uint256",
+                    "name": "amount_",
+                    "type": "uint256"
+                }
+            ],
+            "name": "coinBought",
+            "outputs": [],
+            "stateMutability": "nonpayable",
+            "type": "function"
+        },
+        {
+            "inputs": [],
+            "name": "getAmountOfCoins",
+            "outputs": [
+                {
+                    "internalType": "uint256",
+                    "name": "",
+                    "type": "uint256"
+                }
+            ],
+            "stateMutability": "view",
+            "type": "function"
+        },
+        {
+            "inputs": [],
+            "name": "getBondPrice",
+            "outputs": [
+                {
+                    "internalType": "uint256",
+                    "name": "",
+                    "type": "uint256"
+                }
+            ],
+            "stateMutability": "view",
+            "type": "function"
+        },
+        {
+            "inputs": [
+                {
+                    "internalType": "uint256",
+                    "name": "_price",
+                    "type": "uint256"
+                }
+            ],
+            "name": "getCoinBuyPrice",
+            "outputs": [
+                {
+                    "internalType": "uint256",
+                    "name": "",
+                    "type": "uint256"
+                }
+            ],
+            "stateMutability": "view",
             "type": "function"
         },
         {
@@ -58,7 +121,7 @@ const contractAddress = '0x51416b8B41Ae0769Ed92E1994CDF383ff6AC7736';
         },
         {
             "inputs": [],
-            "name": "priceDiscount",
+            "name": "restTime",
             "outputs": [
                 {
                     "internalType": "uint256",
@@ -79,6 +142,11 @@ const contractAddress = '0x51416b8B41Ae0769Ed92E1994CDF383ff6AC7736';
                 {
                     "internalType": "uint256",
                     "name": "totalsupply_",
+                    "type": "uint256"
+                },
+                {
+                    "internalType": "uint256",
+                    "name": "minPrice_",
                     "type": "uint256"
                 }
             ],
@@ -720,6 +788,45 @@ const contractAddress = '0x51416b8B41Ae0769Ed92E1994CDF383ff6AC7736';
             "type": "function"
         },
         {
+            "inputs": [],
+            "name": "ethInvestment",
+            "outputs": [
+                {
+                    "internalType": "uint256",
+                    "name": "",
+                    "type": "uint256"
+                }
+            ],
+            "stateMutability": "view",
+            "type": "function"
+        },
+        {
+            "inputs": [],
+            "name": "ethOperations",
+            "outputs": [
+                {
+                    "internalType": "uint256",
+                    "name": "",
+                    "type": "uint256"
+                }
+            ],
+            "stateMutability": "view",
+            "type": "function"
+        },
+        {
+            "inputs": [],
+            "name": "ethShareHolders",
+            "outputs": [
+                {
+                    "internalType": "uint256",
+                    "name": "",
+                    "type": "uint256"
+                }
+            ],
+            "stateMutability": "view",
+            "type": "function"
+        },
+        {
             "inputs": [
                 {
                     "internalType": "uint256",
@@ -790,19 +897,6 @@ const contractAddress = '0x51416b8B41Ae0769Ed92E1994CDF383ff6AC7736';
             "type": "function"
         },
         {
-            "inputs": [],
-            "name": "getBondPrice",
-            "outputs": [
-                {
-                    "internalType": "uint256",
-                    "name": "",
-                    "type": "uint256"
-                }
-            ],
-            "stateMutability": "view",
-            "type": "function"
-        },
-        {
             "inputs": [
                 {
                     "internalType": "address",
@@ -823,7 +917,7 @@ const contractAddress = '0x51416b8B41Ae0769Ed92E1994CDF383ff6AC7736';
         },
         {
             "inputs": [],
-            "name": "getBuyPrice",
+            "name": "getCollateralLevel",
             "outputs": [
                 {
                     "internalType": "uint256",
@@ -1060,6 +1154,32 @@ const contractAddress = '0x51416b8B41Ae0769Ed92E1994CDF383ff6AC7736';
                     "internalType": "address",
                     "name": "",
                     "type": "address"
+                }
+            ],
+            "stateMutability": "view",
+            "type": "function"
+        },
+        {
+            "inputs": [],
+            "name": "partOperations",
+            "outputs": [
+                {
+                    "internalType": "uint256",
+                    "name": "",
+                    "type": "uint256"
+                }
+            ],
+            "stateMutability": "view",
+            "type": "function"
+        },
+        {
+            "inputs": [],
+            "name": "partShareholders",
+            "outputs": [
+                {
+                    "internalType": "uint256",
+                    "name": "",
+                    "type": "uint256"
                 }
             ],
             "stateMutability": "view",
