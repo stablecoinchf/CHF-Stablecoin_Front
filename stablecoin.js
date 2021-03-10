@@ -1,4 +1,4 @@
-const contractAddress = '0xe789e97EcfA64a67f79836F91534eC1d98bF0388';	
+const contractAddress = '0x839d551f0fC5fA9D1547c18e436dc12A765E340f';	
 
     const bondCampaignAbi = [
         {
@@ -511,6 +511,13 @@ const contractAddress = '0xe789e97EcfA64a67f79836F91534eC1d98bF0388';
             "type": "event"
         },
         {
+            "inputs": [],
+            "name": "refresh",
+            "outputs": [],
+            "stateMutability": "nonpayable",
+            "type": "function"
+        },
+        {
             "inputs": [
                 {
                     "internalType": "address",
@@ -789,6 +796,19 @@ const contractAddress = '0xe789e97EcfA64a67f79836F91534eC1d98bF0388';
         },
         {
             "inputs": [],
+            "name": "ethDividends",
+            "outputs": [
+                {
+                    "internalType": "uint256",
+                    "name": "",
+                    "type": "uint256"
+                }
+            ],
+            "stateMutability": "view",
+            "type": "function"
+        },
+        {
+            "inputs": [],
             "name": "ethInvestment",
             "outputs": [
                 {
@@ -917,7 +937,46 @@ const contractAddress = '0xe789e97EcfA64a67f79836F91534eC1d98bF0388';
         },
         {
             "inputs": [],
+            "name": "getCollateralDrTEH",
+            "outputs": [
+                {
+                    "internalType": "uint256",
+                    "name": "",
+                    "type": "uint256"
+                }
+            ],
+            "stateMutability": "view",
+            "type": "function"
+        },
+        {
+            "inputs": [],
+            "name": "getCollateralETH",
+            "outputs": [
+                {
+                    "internalType": "uint256",
+                    "name": "",
+                    "type": "uint256"
+                }
+            ],
+            "stateMutability": "view",
+            "type": "function"
+        },
+        {
+            "inputs": [],
             "name": "getCollateralLevel",
+            "outputs": [
+                {
+                    "internalType": "uint256",
+                    "name": "",
+                    "type": "uint256"
+                }
+            ],
+            "stateMutability": "view",
+            "type": "function"
+        },
+        {
+            "inputs": [],
+            "name": "getCollateralLiqETH",
             "outputs": [
                 {
                     "internalType": "uint256",
@@ -1154,6 +1213,32 @@ const contractAddress = '0xe789e97EcfA64a67f79836F91534eC1d98bF0388';
                     "internalType": "address",
                     "name": "",
                     "type": "address"
+                }
+            ],
+            "stateMutability": "view",
+            "type": "function"
+        },
+        {
+            "inputs": [],
+            "name": "partCollateralDR",
+            "outputs": [
+                {
+                    "internalType": "uint256",
+                    "name": "",
+                    "type": "uint256"
+                }
+            ],
+            "stateMutability": "view",
+            "type": "function"
+        },
+        {
+            "inputs": [],
+            "name": "partDividends",
+            "outputs": [
+                {
+                    "internalType": "uint256",
+                    "name": "",
+                    "type": "uint256"
                 }
             ],
             "stateMutability": "view",

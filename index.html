@@ -355,12 +355,22 @@
             
             var poolDividends;
             try {
-                poolDividends = await sc.methods.ethShareHolders().call();
+                poolDividends = await sc.methods.ethDividends().call();
                 poolDividends = web3.utils.fromWei(poolDividends.toString(), 'ether');
                 poolDividends = Math.round(poolDividends * 100000000) / 100000000;
                 // document.getElementById("poolDividends").innerHTML = poolDividends + " ETH";
             } catch (err) {
                 // document.getElementById("poolDividends").innerHTML = err;
+            }
+
+            var poolShareholders;
+            try {
+                poolShareholders = await sc.methods.ethShareHolders().call();
+                poolShareholders = web3.utils.fromWei(poolShareholders.toString(), 'ether');
+                poolShareholders = Math.round(poolShareholders * 100000000) / 100000000;
+                // document.getElementById("poolShareholders").innerHTML = poolDividends + " ETH";
+            } catch (err) {
+                // document.getElementById("poolShareholders").innerHTML = err;
             }
 
             var poolInvestment;
@@ -373,9 +383,25 @@
                 // document.getElementById("poolInvestment").innerHTML = err;
             } 
 
-            poolColateral = contractBalanceETH - poolOperations - poolDividends - poolInvestment;
-            poolColateral = Math.round(poolColateral * 100000000) / 100000000;
-            // document.getElementById("poolColateral").innerHTML = poolColateral + " ETH";
+            var poolColateralsLiq;
+            try {
+                poolColateralsLiq = await sc.methods.getCollateralLiqETH().call();
+                poolColateralsLiq = web3.utils.fromWei(poolColateralsLiq.toString(), 'ether');
+                poolColateralsLiq = Math.round(poolColateralsLiq * 100000000) / 100000000;
+                // document.getElementById("poolColateralsLiq").innerHTML = poolInvestment;
+            } catch (err) {
+                // document.getElementById("poolColateralsLiq").innerHTML = err;
+            } 
+
+            var poolColateralsRes;
+            try {
+                poolColateralsRes = await sc.methods.getCollateralDrTEH().call();
+                poolColateralsRes = web3.utils.fromWei(poolColateralsRes.toString(), 'ether');
+                poolColateralsRes = Math.round(poolColateralsRes * 100000000) / 100000000;
+                // document.getElementById("poolColateralsLiq").innerHTML = poolInvestment;
+            } catch (err) {
+                // document.getElementById("poolColateralsLiq").innerHTML = err;
+            } 
 
             var collateralLevel;
             try {
@@ -395,14 +421,16 @@
             function drawChart() {
             var data = google.visualization.arrayToDataTable([
             ['', ''],
-            ['Collaterals', poolColateral],
+            ['Collaterals Liquidity', poolColateralsLiq],
+            ['Collaterals Reserves', poolColateralsRes],
             ['Investments', poolInvestment],
             ['Operations', poolOperations],
-            ['Dividends', poolDividends]
+            ['Dividends', poolDividends],
+            ['Shareholders', poolShareholders]
             ]);
 
             // Optional; add a title and set the width and height of the chart
-            var options = {'title':'ETH money pools', 'width':400, 'height':250,is3D: true, backgroundColor:'#F4F7FC'};
+            var options = {'title':'ETH money pools', 'width':500, 'height':250,is3D: true, backgroundColor:'#F4F7FC'};
 
             // Display the chart inside the <div> element with id="piechart"
             var chart = new google.visualization.PieChart(document.getElementById('piechart'));
@@ -544,6 +572,15 @@
             document.getElementById("bsTransactionPrice").innerHTML = transactionPrice;
         }
 
+        async function refresh() {
+            try {
+                await sc.methods.refresh().call();
+                getInfos();
+			} catch (err) {
+				document.getElementById("symbol").innerHTML = err;
+			}
+        }
+
         
 
 
@@ -580,7 +617,7 @@
     </script>
 </head>
 <body>
-    <h1><span id="symbol"></span> current price : <span id="priceBCHF"></span></h1>    
+    <h1><span id="symbol"></span> current price : <span id="priceBCHF"></span>      <!--button onclick="refresh()">Refresh</button--></h1>    
     min Price: <span id="minPrice"></span>, max Price: <span id="maxPrice"></span>, ico Price: <span id="icoPrice"></span>
     <span id="connectError"></span>
     <br />
