@@ -18,7 +18,7 @@
 	
     <script type="text/javascript">
 
-        var account, sc , bc;
+        var account, sc , bc, dc;
 
         window.addEventListener("load", () => connectToMetamask(), false);
 
@@ -59,8 +59,10 @@
 
             document.getElementById("currentAccount").innerHTML = htmlAccountsListBox;
             document.getElementById("contractAddress").innerHTML = contractAddress;
+            document.getElementById("contractAddress").href = "https://rinkeby.etherscan.io/address/" + contractAddress;
 
             document.getElementById("totalSupplyCoin").innerHTML = totalSupplyCoin + " BCHF";
+
 
             if (!sc) {
                 sc = await new web3.eth.Contract(contractAbi, contractAddress);
@@ -70,6 +72,11 @@
                 var bcAddress = await  sc.methods.bc().call();
                 bc = await new web3.eth.Contract(bondCampaignAbi, bcAddress); 
             }
+
+             if (!dc) {
+                var dcAddress = await  sc.methods.dc().call();
+                dc = await new web3.eth.Contract(dividendCampaignAbi, dcAddress); 
+            } 
                 
             var web3ScPrice = await sc.methods.scPrice().call();  
             var web3GetBondAmount = await sc.methods.getBondAmount(account).call();
@@ -78,7 +85,10 @@
 
             var web3BcAmount = await bc.methods.amount().call();
 
+            var web3ShareAmountAccount = await sc.methods.getShareAmount(account).call();
 
+            var web3DividendProShare  = await sc.methods.getDividendProShare().call();
+            
             try { 
                 document.getElementById("symbol").innerHTML = web3ScSymbol;
             } catch (err) {
@@ -145,6 +155,15 @@
             }
 
             try { 
+			    var dividendsDistribution = await dc.methods.amountETH().call();
+                dividendsDistribution = web3.utils.fromWei(dividendsDistribution, 'ether');
+                dividendsDistribution = Math.round(dividendsDistribution*100000000)/100000000;
+                document.getElementById("dividendsDistribution").innerHTML = dividendsDistribution + " ETH";
+            } catch (err) {
+                document.getElementById("dividendsDistribution").innerHTML = err;
+            }
+
+            try { 
 			    var priceETHCHF = web3PriceETHCHF;
                 priceETHCHF = priceETHCHF / 100000000;
                 document.getElementById("priceETHCHF").innerHTML = priceETHCHF + " CHF";
@@ -163,7 +182,7 @@
             try { 
 			    priceBCHF = web3ScPrice;
                 priceBCHF = priceBCHF / 100000000;
-                document.getElementById("priceBCHF").innerHTML = priceBCHF + "% (of CHF)";
+                document.getElementById("priceBCHF").innerHTML = priceBCHF + "%";
             } catch (err) {
                 document.getElementById("priceBCHF").innerHTML = err;
             }
@@ -177,20 +196,6 @@
                 document.getElementById("owner").innerHTML = isOwner;
             } catch (err) {
                 document.getElementById("owner").innerHTML = err;
-            }
-
-            try {
-			    var minter = await sc.methods.isMinter(account).call();
-                document.getElementById("minter").innerHTML = minter;
-            } catch (err) {
-                document.getElementById("minter").innerHTML = err;
-            }
-
-            try {
-			    var burner = await sc.methods.isBurner(account).call();
-                document.getElementById("burner").innerHTML = minter;
-            } catch (err) {
-                document.getElementById("burner").innerHTML = err;
             }
 
             try {
@@ -216,7 +221,7 @@
             }
            
             try {
-			    var balanceBitCHFShares = await sc.methods.getShareAmount(account).call();
+			    var balanceBitCHFShares = web3ShareAmountAccount;
                 balanceBitCHFShares = web3.utils.fromWei(balanceBitCHFShares, 'ether');
                 balanceBitCHFShares = Math.round(balanceBitCHFShares*100)/100;
                 document.getElementById("balanceBCHFShares").innerHTML = balanceBitCHFShares + " " + web3ScSymbol +"S";
@@ -283,7 +288,7 @@
                     restTime = Math.round((restTime/60)*100)/100;
                     document.getElementById("numberOfCoinsSell").disabled = false;
                     document.getElementById("btnSell").disabled = false;
-                    document.getElementById("errorsSellCoins").innerHTML = "<br><i> Contract is bying <b>"+ noOfCoinsToBuy +"</b> coins within <b>" + restTime + " minutes </b> bacause the curent price is not in the expected range.</i>";
+                    document.getElementById("errorsSellCoins").innerHTML = "<br><i> Contract is bying <b>"+ noOfCoinsToBuy +"</b> coins within next <b>" + restTime + " minutes </b> bacause the curent price is not in the expected range.</i>";
                 } else {
                     document.getElementById("numberOfCoinsSell").disabled = true;
                     document.getElementById("btnSell").disabled = true;
@@ -312,7 +317,7 @@
                     restTime = Math.round((restTime/60)*100)/100;
                     document.getElementById("numberOfBonds").disabled = false;
                     document.getElementById("btnBuyBonds").disabled = false;
-                    document.getElementById("errorsBuyBonds").innerHTML = "<i><br> Contract is selling <b>" + bcAmount +"</b> bonds </b> coins within <b>" + restTime + " minutes </b> bacause the curent price is not in the expected range.</i>";
+                    document.getElementById("errorsBuyBonds").innerHTML = "<i><br> Contract is selling <b>" + bcAmount +"</b> bonds </b> coins within next<b>" + restTime + " minutes </b> bacause the curent price is not in the expected range.</i>";
                 } else {
                     document.getElementById("numberOfBonds").disabled = true;
                     document.getElementById("btnBuyBonds").disabled = true;
@@ -363,16 +368,6 @@
                 // document.getElementById("poolDividends").innerHTML = err;
             }
 
-            var poolShareholders;
-            try {
-                poolShareholders = await sc.methods.ethShareHolders().call();
-                poolShareholders = web3.utils.fromWei(poolShareholders.toString(), 'ether');
-                poolShareholders = Math.round(poolShareholders * 100000000) / 100000000;
-                // document.getElementById("poolShareholders").innerHTML = poolDividends + " ETH";
-            } catch (err) {
-                // document.getElementById("poolShareholders").innerHTML = err;
-            }
-
             var poolInvestment;
             try {
                 poolInvestment = await sc.methods.ethInvestment().call();
@@ -383,25 +378,16 @@
                 // document.getElementById("poolInvestment").innerHTML = err;
             } 
 
-            var poolColateralsLiq;
+            var poolColaterals;
             try {
-                poolColateralsLiq = await sc.methods.getCollateralLiqETH().call();
-                poolColateralsLiq = web3.utils.fromWei(poolColateralsLiq.toString(), 'ether');
-                poolColateralsLiq = Math.round(poolColateralsLiq * 100000000) / 100000000;
-                // document.getElementById("poolColateralsLiq").innerHTML = poolInvestment;
+                poolColaterals = await sc.methods.getCollateralETH().call();
+                poolColaterals = web3.utils.fromWei(poolColaterals.toString(), 'ether');
+                poolColaterals = Math.round(poolColaterals * 100000000) / 100000000;
+                // document.getElementById("poolColaterals").innerHTML = poolInvestment;
             } catch (err) {
-                // document.getElementById("poolColateralsLiq").innerHTML = err;
+                // document.getElementById("poolColaterals").innerHTML = err;
             } 
 
-            var poolColateralsRes;
-            try {
-                poolColateralsRes = await sc.methods.getCollateralDrTEH().call();
-                poolColateralsRes = web3.utils.fromWei(poolColateralsRes.toString(), 'ether');
-                poolColateralsRes = Math.round(poolColateralsRes * 100000000) / 100000000;
-                // document.getElementById("poolColateralsLiq").innerHTML = poolInvestment;
-            } catch (err) {
-                // document.getElementById("poolColateralsLiq").innerHTML = err;
-            } 
 
             var collateralLevel;
             try {
@@ -421,12 +407,10 @@
             function drawChart() {
             var data = google.visualization.arrayToDataTable([
             ['', ''],
-            ['Collaterals Liquidity', poolColateralsLiq],
-            ['Collaterals Reserves', poolColateralsRes],
+            ['Collaterals', poolColaterals],
             ['Investments', poolInvestment],
             ['Operations', poolOperations],
-            ['Dividends', poolDividends],
-            ['Shareholders', poolShareholders]
+            ['Dividends', poolDividends]
             ]);
 
             // Optional; add a title and set the width and height of the chart
@@ -435,7 +419,66 @@
             // Display the chart inside the <div> element with id="piechart"
             var chart = new google.visualization.PieChart(document.getElementById('piechart'));
             chart.draw(data, options);
-            }           
+            }  
+            
+            
+            try {
+                var dividendProShare  = web3DividendProShare;
+                dividendProShare = web3.utils.fromWei(dividendProShare, 'ether');
+                dividendProShare = Math.round(dividendProShare * 10000) / 10000;
+                document.getElementById("dividendProShare").innerHTML = dividendProShare;
+            } catch (err) {
+                document.getElementById("dividendProShare").innerHTML = err;
+            }
+
+            dividendPayed = await dc.methods.dividendPayed(account).call();
+
+            try {
+                var dividendProShare  = web3.utils.fromWei(web3DividendProShare, 'ether');
+                var shareAmount = web3.utils.fromWei(web3ShareAmountAccount, 'ether');
+                var dividend  = dividendProShare * shareAmount ;
+                if (dividendPayed==true) {
+                    dividend=0;
+                }
+                var dividend = Math.round(dividend * 10000) / 10000;
+                document.getElementById("dividend").innerHTML = dividend;
+            } catch (err) {
+                document.getElementById("dividend").innerHTML = err;
+            }
+
+            isDcActive = await dc.methods.active().call();
+
+            var dividendsRestTime = await dc.methods.getRestTime().call();
+            dividendsRestTime = Math.round((dividendsRestTime / 86400)*100)/100;
+            document.getElementById("dividendsDistributionRestTime").innerHTML = dividendsRestTime + " days";
+
+            if (!isDcActive==true) {
+                document.getElementById("btnGetDividend").disabled = true;
+                document.getElementById("errorsDividend").innerHTML = "<i>Contract is currently not distributing dividends</i>";
+            } else {
+                dividendsETH = await dc.methods.amountETH().call();
+                dividendsETH = web3.utils.fromWei(dividendsETH, 'ether');
+                dividendsETH = Math.round(dividendsETH * 100) / 100;
+
+                
+                
+                if (web3ShareAmountAccount>0)  {
+                    if (!dividendPayed==true) {
+                        var dividendFee = await sc.methods.getDividendFee(account).call();
+                        dividendFee = web3.utils.fromWei(dividendFee, 'ether');
+                        var dividendFeeCHF = Math.round(dividendFee * web3PriceETHCHF / 1000000) / 100;
+                        dividendFee = Math.round(dividendFee * 10000000) / 100000000;
+                        document.getElementById("errorsDividend").innerHTML = "<i><br> Mining fee: <b>" + dividendFeeCHF + " CHF</b> (" + dividendFee +" ETH) </i>";    
+                        document.getElementById("btnGetDividend").disabled = false;
+                    } else {
+                        document.getElementById("btnGetDividend").disabled = true;
+                        document.getElementById("errorsDividend").innerHTML = "<i>The dividend has alredy been payed.<b>";
+                    }
+                }   else  {
+                    document.getElementById("btnGetDividend").disabled = true;
+                    document.getElementById("errorsDividend").innerHTML = "<i>Contract is distributing <b>" + dividendsETH+" ETH</b> in form of dividends within next <b>"+dividendsRestTime+"</b> days, but you are not a shareholder.</i>";
+                }
+            } 
         }
 
 
@@ -564,6 +607,21 @@
 
         }
 
+        async function getDividend() { 
+            document.getElementById("errorsDividend").innerHTML = "";
+            if (!sc) {
+                sc = await new web3.eth.Contract(contractAbi, contractAddress);
+            }
+            try {
+                var dividendFee = await sc.methods.getDividendFee(account).call();
+                await sc.methods.getDividend().send({ from: account, gas: 3000000, value: dividendFee});
+                getInfos();
+			} catch (err) {
+				document.getElementById("errorsDividend").innerHTML = err;
+			}
+
+        }
+
         async function buySharesTransactionPrice() {
             var noOfShares = document.getElementById("numberOfShares").value;
             var priceCHFETH = await sc.methods.getPrice_CHF_ETH().call();
@@ -617,7 +675,7 @@
     </script>
 </head>
 <body>
-    <h1><span id="symbol"></span> current price : <span id="priceBCHF"></span>      <!--button onclick="refresh()">Refresh</button--></h1>    
+    <h1><span id="symbol"></span> current price : <span  id="priceBCHF"></span> (of CHF)      <!--button onclick="refresh()">Refresh</button--></h1>    
     min Price: <span id="minPrice"></span>, max Price: <span id="maxPrice"></span>, ico Price: <span id="icoPrice"></span>
     <span id="connectError"></span>
     <br />
@@ -629,9 +687,7 @@
                 <b>Acount :</b> <span id="currentAccount"></span>
                 <br />
                 <br />
-                <b> Owner:</b>  <span id="owner"></span>, 
-                <b> Minter:</b>  <span id="minter"></span>,
-                <b> Burner:</b>  <span id="burner"></span>
+                <b> Owner:</b>  <span id="owner"></span> 
                 <br />
                 <b> Amount of ETH :</b> <span id="balanceETH"></span>
                 <br />
@@ -642,29 +698,23 @@
                 <b> Amount of bonds :</b> <span id="balanceBCHFBonds"></span>
             </td> 
             <td >
-                <b>Contract :</b> <span id="contractAddress"></span>
+                <b>Contract :</b> <a id="contractAddress"></a> </span>
                 <br />
                 <br />
                 <b> Price ETH :</b>  <span id="priceETHCHF"></span>,
                 <b> Price CHF :</b>  <span id="priceCHFETH"></span>
                 <br />
-                <b> Colateral level :</b>  <span id="collateralLevel"></span>
+                <b> Colateral level :</b>  <span   id="collateralLevel"></span>
                 <br />
-                <b> Total amount of ETH :</b>  <span id="contractBalanceETH"></span>
+                <b> Total amount of ETH :</b>  <span  id="contractBalanceETH"></span>
                 <br />
                 <b> Total supply of coins :</b>  <span id="totalSupplyCoin"></span>
                 <br />
                 <b> Total number of shares :</b>  <span id="totalSupplyShares"></span>
+                
             </td> 
             <td>
                 <div id="piechart"></div>
-                <!-- b> Pool operations :</b>  <span id="poolOperations"></span>
-                <br />
-                <b> Pool investment :</b>  <span id="poolInvestment"></span>
-                <br />
-                <b> Pool dividends :</b>  <span id="poolDividends"></span>
-                <br />
-                <b> Pool colateral :</b>  <span id="poolColateral"></span-->
             </td>
         </tr>
        
@@ -681,6 +731,22 @@
                 <br />
                 <b>ICO share price: </b> <span id="sharePrice"></span>
                 <span id="errorsBuyShares"></span>
+                <br />
+                <br />
+                <br />
+                <br />
+                <b>Dividends: </b>
+                <button onclick="getDividend()" id="btnGetDividend" name="btnGetDividend" >Get dividend</button>
+                <br />
+                Dividends in distribution : <span id="dividendsDistribution"></span>
+                <br />
+                Distribution resttime : <span id="dividendsDistributionRestTime"></span>
+                <br />
+                <br />
+                Get <b><span id="dividend"></span></b> coins of dividend (<span id="dividendProShare"></span> coins pro share).
+                <br />
+                <br />
+                <span id="errorsDividend"></span>
             </td>
             <td width="33%">
                 <br />
@@ -718,6 +784,7 @@
                 <br />
                 <br />
                 <br />
+                <b>Bonds conversion: </b>
                 <button onclick="executeBonds()" id="btnExecuteBonds" name="btnExecuteBonds" >Convert</button>
                 <br />
                 Convert <b><span id="bondsToExecute"></span></b> bonds to <span id="convertedCoins"></span> coins and <span id="convertedShares"></span> shares.
