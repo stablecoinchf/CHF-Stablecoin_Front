@@ -95,17 +95,17 @@
                 document.getElementById("symbol").innerHTML = err;
             }
 
-            /* try { 
+            try { 
 			    var name = await sc.methods.name().call();
-                document.getElementById("name").innerHTML = name;
+                document.getElementById("name").innerHTML = name + " " + web3ScSymbol;
             } catch (err) {
                 document.getElementById("name").innerHTML = err;
-            }*/
+            }
 
             try { 
 			    var minPrice = await sc.methods.minPrice().call();
                 minPrice = minPrice / 100000000;
-                document.getElementById("minPrice").innerHTML = minPrice + " %";
+                document.getElementById("minPrice").innerHTML = minPrice + "%";
             } catch (err) {
                 document.getElementById("minPrice").innerHTML = err;
             }
@@ -113,7 +113,7 @@
             try { 
 			    var maxPrice = await sc.methods.maxPrice().call();
                 maxPrice = maxPrice / 100000000;
-                document.getElementById("maxPrice").innerHTML = maxPrice + " %";
+                document.getElementById("maxPrice").innerHTML = maxPrice + "%";
             } catch (err) {
                 document.getElementById("maxPrice").innerHTML = err;
             }
@@ -121,7 +121,7 @@
             try { 
 			    var icoPrice = await sc.methods.icoPrice().call();
                 icoPrice = icoPrice / 100000000;
-                document.getElementById("icoPrice").innerHTML = icoPrice + " %";
+                document.getElementById("icoPrice").innerHTML = icoPrice + "%";
             } catch (err) {
                 document.getElementById("icoPrice").innerHTML = err;
             }
@@ -154,14 +154,14 @@
                 document.getElementById("totalSupplyShares").innerHTML = err;
             }
 
-            try { 
-			    var dividendsDistribution = await dc.methods.amountETH().call();
-                dividendsDistribution = web3.utils.fromWei(dividendsDistribution, 'ether');
-                dividendsDistribution = Math.round(dividendsDistribution*100000000)/100000000;
-                document.getElementById("dividendsDistribution").innerHTML = dividendsDistribution + " ETH";
+            /* try { 
+			     var dividendsDistribution = await dc.methods.amountETH().call();
+                 dividendsDistribution = web3.utils.fromWei(dividendsDistribution, 'ether');
+                 dividendsDistribution = Math.round(dividendsDistribution*100000000)/100000000;
+                 document.getElementById("dividendsDistribution").innerHTML = dividendsDistribution + " ETH";
             } catch (err) {
-                document.getElementById("dividendsDistribution").innerHTML = err;
-            }
+                 document.getElementById("dividendsDistribution").innerHTML = err;
+            } */
 
             try { 
 			    var priceETHCHF = web3PriceETHCHF;
@@ -288,17 +288,17 @@
                     restTime = Math.round((restTime/60)*100)/100;
                     document.getElementById("numberOfCoinsSell").disabled = false;
                     document.getElementById("btnSell").disabled = false;
-                    document.getElementById("errorsSellCoins").innerHTML = "<br><i> Contract is bying <b>"+ noOfCoinsToBuy +"</b> coins within next <b>" + restTime + " minutes </b> bacause the curent price is not in the expected range.</i>";
+                    document.getElementById("errorsSellCoins").innerHTML = "<br><i> Contract is bying <b>"+ noOfCoinsToBuy +"</b> "+web3ScSymbol+" within next <b>" + restTime + " minutes </b> bacause the curent price is not in the expected range.</i>";
                 } else {
                     document.getElementById("numberOfCoinsSell").disabled = true;
                     document.getElementById("btnSell").disabled = true;
-                    document.getElementById("errorsSellCoins").innerHTML = "<br/><i> Contract is not bying coins</i>";
+                    document.getElementById("errorsSellCoins").innerHTML = "<br/><i> Contract is not bying "+web3ScSymbol+"</i>";
                 }
                 
             }   else  {
                 document.getElementById("numberOfCoinsSell").disabled = true;
                 document.getElementById("btnSell").disabled = true;
-                document.getElementById("errorsSellCoins").innerHTML = "<br/><i> Contract is not bying coins bacause the curent price is in the expected range.</i>";
+                document.getElementById("errorsSellCoins").innerHTML = "<br/><i> Contract is not bying "+web3ScSymbol+" bacause the curent price is in the expected range.</i>";
             }
 
             try {
@@ -317,7 +317,7 @@
                     restTime = Math.round((restTime/60)*100)/100;
                     document.getElementById("numberOfBonds").disabled = false;
                     document.getElementById("btnBuyBonds").disabled = false;
-                    document.getElementById("errorsBuyBonds").innerHTML = "<i><br> Contract is selling <b>" + bcAmount +"</b> bonds </b> coins within next<b>" + restTime + " minutes </b> bacause the curent price is not in the expected range.</i>";
+                    document.getElementById("errorsBuyBonds").innerHTML = "<i><br> Contract is selling <b>" + bcAmount +"</b> bonds </b> "+web3ScSymbol+" within next<b>" + restTime + " minutes </b> bacause the curent price is not in the expected range.</i>";
                 } else {
                     document.getElementById("numberOfBonds").disabled = true;
                     document.getElementById("btnBuyBonds").disabled = true;
@@ -345,7 +345,7 @@
                 
             }   else  {
                 document.getElementById("btnExecuteBonds").disabled = true;
-                document.getElementById("errorsExecuteBonds").innerHTML = "<br><i>Converting bonds not possible because the current price of the coin is less than 1 CHF</i>";
+                document.getElementById("errorsExecuteBonds").innerHTML = "<br><i>Converting bonds not possible because the current price of "+web3ScSymbol+" is less than 1 CHF</i>";
             }   
 
             var poolOperations;
@@ -414,7 +414,7 @@
             ]);
 
             // Optional; add a title and set the width and height of the chart
-            var options = {'title':'ETH money pools', 'width':500, 'height':250,is3D: true, backgroundColor:'#F4F7FC'};
+            var options = {'title':'ETH money pools', 'width':500, 'height':220,is3D: true, backgroundColor:'#F4F7FC'};
 
             // Display the chart inside the <div> element with id="piechart"
             var chart = new google.visualization.PieChart(document.getElementById('piechart'));
@@ -426,7 +426,7 @@
                 var dividendProShare  = web3DividendProShare;
                 dividendProShare = web3.utils.fromWei(dividendProShare, 'ether');
                 dividendProShare = Math.round(dividendProShare * 10000) / 10000;
-                document.getElementById("dividendProShare").innerHTML = dividendProShare;
+                document.getElementById("dividendProShare").innerHTML = dividendProShare + " " + web3ScSymbol;
             } catch (err) {
                 document.getElementById("dividendProShare").innerHTML = err;
             }
@@ -441,7 +441,7 @@
                     dividend=0;
                 }
                 var dividend = Math.round(dividend * 10000) / 10000;
-                document.getElementById("dividend").innerHTML = dividend;
+                document.getElementById("dividend").innerHTML = dividend + " " + web3ScSymbol;
             } catch (err) {
                 document.getElementById("dividend").innerHTML = err;
             }
@@ -450,7 +450,7 @@
 
             var dividendsRestTime = await dc.methods.getRestTime().call();
             dividendsRestTime = Math.round((dividendsRestTime / 86400)*100)/100;
-            document.getElementById("dividendsDistributionRestTime").innerHTML = dividendsRestTime + " days";
+            /* document.getElementById("dividendsDistributionRestTime").innerHTML = dividendsRestTime + " days"; */
 
             if (!isDcActive==true) {
                 document.getElementById("btnGetDividend").disabled = true;
@@ -468,7 +468,7 @@
                         dividendFee = web3.utils.fromWei(dividendFee, 'ether');
                         var dividendFeeCHF = Math.round(dividendFee * web3PriceETHCHF / 1000000) / 100;
                         dividendFee = Math.round(dividendFee * 10000000) / 100000000;
-                        document.getElementById("errorsDividend").innerHTML = "<i><br> Mining fee: <b>" + dividendFeeCHF + " CHF</b> (" + dividendFee +" ETH) </i>";    
+                        document.getElementById("errorsDividend").innerHTML = "<i>Mining fee: <b>" + dividendFeeCHF + " CHF</b> (" + dividendFee +" ETH) </i>";    
                         document.getElementById("btnGetDividend").disabled = false;
                     } else {
                         document.getElementById("btnGetDividend").disabled = true;
@@ -521,7 +521,7 @@
             var noOfCoins = document.getElementById("numberOfCoins").value;
 
             if (noOfCoins <= 0) {
-                document.getElementById("errorsBuyCoins").innerHTML = "Incorrect number of coins";
+                document.getElementById("errorsBuyCoins").innerHTML = "Incorrect number of coins!";
                 return;
             }
 
@@ -549,7 +549,7 @@
             var noOfCoins = document.getElementById("numberOfCoinsSell").value;
 
             if (noOfCoins <= 0) {
-                document.getElementById("errorsSellCoins").innerHTML = "Incorrect number of coins";
+                document.getElementById("errorsSellCoins").innerHTML = "Incorrect number of coins!";
                 return;
             }
 
@@ -572,7 +572,7 @@
             var noOfBonds = document.getElementById("numberOfBonds").value;
 
             if (noOfBonds <= 0) {
-                document.getElementById("errorsBuyBonds").innerHTML = "Incorrect number of bonds";
+                document.getElementById("errorsBuyBonds").innerHTML = "Incorrect number of bonds!";
                 return;
             }
 
@@ -630,9 +630,9 @@
             document.getElementById("bsTransactionPrice").innerHTML = transactionPrice;
         }
 
-        async function refresh() {
+        async function refresh() { 
             try {
-                await sc.methods.refresh().call();
+                await sc.methods.refresh().send({ from: account, gas: 3000000});
                 getInfos();
 			} catch (err) {
 				document.getElementById("symbol").innerHTML = err;
@@ -675,13 +675,17 @@
     </script>
 </head>
 <body>
-    <h1><span id="symbol"></span> current price : <span  id="priceBCHF"></span> (of CHF)      <!--button onclick="refresh()">Refresh</button--></h1>    
-    min Price: <span id="minPrice"></span>, max Price: <span id="maxPrice"></span>, ico Price: <span id="icoPrice"></span>
+    <h1 style="text-align:center"><span id="name"></h1> 
+    <h3 style="text-align:center"  >Blockchain environment: Test (Ethereum Rinkeby) </span></h1>
+    <h5 style="text-align:center" ><span id="symbol"></span> current price : <span  id="priceBCHF"></span> (of CHF), min Price: <span id="minPrice"></span>, max Price: <span id="maxPrice"></span>, ico Price: <span id="icoPrice"></span></h5>
+    <h6 style="text-align:center" ><button onclick="refresh()">Refresh</button></h6>
     <span id="connectError"></span>
-    <br />
-    <br />  
     <table>
-        
+        <tr>
+            <td colspan="3">
+                <hr>
+            </td>
+        </tr>
         <tr valign="top" >
             <td>
                 <b>Acount :</b> <span id="currentAccount"></span>
@@ -710,17 +714,20 @@
                 <br />
                 <b> Total supply of coins :</b>  <span id="totalSupplyCoin"></span>
                 <br />
-                <b> Total number of shares :</b>  <span id="totalSupplyShares"></span>
-                
+                <b> Total number of shares :</b>  <span id="totalSupplyShares"></span>  
             </td> 
             <td>
                 <div id="piechart"></div>
             </td>
         </tr>
+        <tr>
+            <td colspan="3">
+                <hr>
+            </td>
+        </tr>
        
         <tr valign="top">
             <td width="33%" >
-                <br />
                 <b>ICO (Initial coin offering) </b>
                 <br />
                 <i>Buy shares & 10 coins pro share</i>
@@ -738,18 +745,12 @@
                 <b>Dividends: </b>
                 <button onclick="getDividend()" id="btnGetDividend" name="btnGetDividend" >Get dividend</button>
                 <br />
-                Dividends in distribution : <span id="dividendsDistribution"></span>
-                <br />
-                Distribution resttime : <span id="dividendsDistributionRestTime"></span>
-                <br />
-                <br />
-                Get <b><span id="dividend"></span></b> coins of dividend (<span id="dividendProShare"></span> coins pro share).
+                Get <b><span id="dividend"></span></b> of dividend (<span id="dividendProShare"></span> pro share).
                 <br />
                 <br />
                 <span id="errorsDividend"></span>
             </td>
             <td width="33%">
-                <br />
                 <b>Buy Coin</b>
                 <br />
                 <br />
@@ -771,7 +772,6 @@
                 <span id="errorsSellCoins"></span>
             </td>
             <td width="33%"> 
-                <br />
                 <b>Buy Bond</b>
                 <br />
                 <br />
@@ -790,6 +790,11 @@
                 Convert <b><span id="bondsToExecute"></span></b> bonds to <span id="convertedCoins"></span> coins and <span id="convertedShares"></span> shares.
                 <br />
                 <span id="errorsExecuteBonds"></span>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="3">
+                <hr>
             </td>
         </tr>
     </table>   
