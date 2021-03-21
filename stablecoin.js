@@ -1,4 +1,4 @@
-const contractAddress = '0x394561057cB4E134778E19583f5DC3b9cCC5115D';	
+const contractAddress = '0x30AaEBdfB40f14a734dEb0BD9e05ebA192a855ca';	
 
 const dividendCampaignAbi =[
 	{
